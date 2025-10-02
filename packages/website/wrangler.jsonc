@@ -5,5 +5,8 @@
   "preview_urls": true,
   "assets": {
     "directory": "./dist",
+  },
+  "env": {
+    "production":{}
   }
 }
