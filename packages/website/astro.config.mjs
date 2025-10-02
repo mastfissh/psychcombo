@@ -5,21 +5,29 @@ import tailwindcss from "@tailwindcss/vite";
 import compress from "astro-compress";
 import { defineConfig } from 'astro/config';
 
+import cloudflare from "@astrojs/cloudflare";
+
 export default defineConfig({
   site: 'https://psychcombo.com/',
+
   vite: {
     plugins: [tailwindcss()],
   },
+
   integrations: [
     mdx(),
     sitemap(),
     preact(),
+
     compress({
       HTML: false,
       JavaScript: false,
     }),
   ],
+
   build: {
     inlineStylesheets: 'always'
-  }
+  },
+
+  adapter: cloudflare({ imageService: 'compile' })
 });
