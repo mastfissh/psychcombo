@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+  const pages = await getCollection('psychoactives');
+  return pages.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+// 2. When it's time to render, you can get the entry directly from the prop
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+import data from '@public/risks.json';
+let value = entry.slug
+const substances = await getCollection('psychoactives');
+import BaseLayout from '@src/layouts/BaseLayout.astro';
+import EditPage from '@src/components/edit_page.astro';
+import Disclaimer from '@src/components/disclaimer.astro';
+import Icon from "heroicons-astro/Heroicon.astro";
+import { combo, risk, linkify, risk_to_bg } from '@src/util';
+import Chart from '@src/components/chart.astro';
+import "@src/styles/global.css";
+
+let family_copy = `${entry.data.title} is not just one drug; ${entry.data.title} is a group of drugs. Drugs in this group include ${(entry.data.family_members||[]).join(', ')}. Drugs within the same group can have very different dosages and very different effects.`
+if (entry.data.title.toLowerCase().endsWith('species')) {
+  family_copy = `${entry.data.title} is not just one species; ${entry.data.title} is a group of species. Species in this group include ${(entry.data.family_members||[]).join(', ')}. Species within the same group can have very different dosages and very different effects.`
+}
+---
+<BaseLayout pageTitle={entry.data.title} metaDescription={`Psychoactives information. This is the page for harm reduction to learn about safety risks for ${entry.data.title}, ${(entry.data.family_members||[]).concat(entry.data.aka||[]).join(', ')}`}>
+
+  <article class="prose lg:prose-xl mx-auto">
+    <h2> {entry.data.title} </h2>
+    <figure class="mb-1 max-w-2-xl relative ">
+    <img
+      class="mb-4 h-auto max-w-full rounded-lg align-middle leading-none shadow-lg"
+      alt={entry.data.image_caption}
+      {...entry.data.image_location}
+    />
+
+    </figure>
+    {entry.data.warnings &&
+      <p class:list={risk_to_bg('SR')} class = "rounded">WARNING: {entry.data.warnings}</p>
+    }
+    {entry.data.family_members &&
+    <p>{family_copy}</p>
+  }
+
+    {entry.data.aka && <h2>Commonly known as: </h2>
+      <ul >
+    {entry.data.aka.map((name) => (
+      <li>
+      {name}
+      </li>
+      ))
+    }</ul>}
+     <h2> Effects </h2>
+     <div><Icon iconCode="chevron-up" iconStyle="outline" customClasses="h-8 w-8 stroke-green-300 inline" /> {entry.data.positive_effects}</div>
+     <div><Icon iconCode="exclamation-circle" iconStyle="outline" customClasses="h-8 w-8 stroke-gray-300 inline" /> {entry.data.neutral_effects}</div>
+     <div><Icon iconCode="chevron-down" iconStyle="outline" customClasses="h-8 w-8 stroke-red-300 inline" /> {entry.data.negative_effects}</div>
+     <h2 >{entry.data.dosage_table.title}</h2>
+     <table><thead><tr>
+      <th>Effect</th>
+      <th>Dose</th></tr></thead>
+      <tbody>
+        <tr><td>Threshold</td><td>{entry.data.dosage_table.threshold}</td></tr>
+        <tr><td>Light</td><td>{entry.data.dosage_table.light}</td></tr>
+        <tr><td>Common</td><td>{entry.data.dosage_table.common}</td></tr>
+        <tr><td>Strong</td><td>{entry.data.dosage_table.strong}</td></tr>
+        <tr><td>Heavy</td><td>{entry.data.dosage_table.heavy}</td></tr></tbody>
+    </table>
+    <span class="print:break-after-page"></span>
+    <Chart title={entry.data.duration_chart_title} data={entry.data.duration_chart} />
+    <h2 >{entry.data.duration_chart_title}</h2>
+    <table><thead><tr>
+     <th></th>
+     <th>Duration</th></tr></thead>
+     <tbody>
+       <tr><td>Total</td><td>{entry.data.duration_chart.total}</td></tr>
+       <tr><td>Onset</td><td>{entry.data.duration_chart.onset}</td></tr>
+       <tr><td>Coming Up</td><td>{entry.data.duration_chart.coming_up}</td></tr>
+       <tr><td>Plateau</td><td>{entry.data.duration_chart.plateau}</td></tr>
+       <tr><td>Coming Down</td><td>{entry.data.duration_chart.coming_down}</td></tr></tbody>
+   </table>
+   <Content />
+   <span class="print:break-after-page"></span>
+    <EditPage slug={entry.slug} type={"psychoactives"} />
+  </article>
+
+  <span class="print:break-after-page"></span>
+<h2 class=" mx-auto text-xl  mb-4">Combined with: </h2>
+<span class="grid grid-cols-2 lg:grid-cols-3 print:my-4">
+    <span class:list={risk_to_bg('SR')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Significant Risk</span>
+    <span class:list={risk_to_bg('GR')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Greater Risk</span>
+    <span class:list={risk_to_bg('MR')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Minor Risk</span>
+    <span class:list={risk_to_bg('LRS')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Low Risk Synergy</span>
+    <span class:list={risk_to_bg('LRD')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Low Risk Decrease</span>
+    <span class:list={risk_to_bg('LRNS')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Low Risk No Synergy</span>
+  </span>
+<div class="container px-6 mx-auto">
+  <span class="grid w-full gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
+  {substances.map((substance) => (
+  (substance.slug != value) && <a href={`${import.meta.env.BASE_URL}combos/` + linkify(combo([substance.slug,value])) + '/'} class="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 h-auto">
+      <div class="p-4 h-24">
+          <h3 class="p-1 text-2xl font-bold tracking-tight text-gray-600 rounded-lg" class:list={risk_to_bg(risk([entry.slug,substance.slug], data))} >{substance.data.title}</h3>
+      </div>
+      <img
+        class="h-auto max-w-full rounded-lg align-middle leading-none shadow-lg"
+        width="300"
+        alt={substance.data.image_caption}
+        {...substance.data.image_location}
+      />
+    </a>
+
+  ))}
+  </span>
+</div>
+<Disclaimer />
+</BaseLayout>

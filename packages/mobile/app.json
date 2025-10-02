@@ -1,0 +1,82 @@
+{
+  "expo": {
+    "name": "psychcombo",
+    "slug": "safety-matrix",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/images/splash_icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash_icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "userInterfaceStyle": "light",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mastfish.psychcombo",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "userInterfaceStyle": "light",
+      "package": "com.mastfish.psychcombo",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/splash_icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {}
+      ],
+      [
+        "expo-asset",
+        {
+          "assets": [
+            "./assets/images",
+            "./assets/images/_astro"
+          ]
+        }
+      ],
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#232323",
+          "image": "./assets/images/splash_icon.png",
+          "imageWidth": 200
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ec3bb2ae-1dda-4647-947e-f0c9485c7acf"
+      }
+    },
+    "owner": "mastfish-org",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ec3bb2ae-1dda-4647-947e-f0c9485c7acf"
+    }
+  }
+}

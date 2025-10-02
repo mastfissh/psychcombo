@@ -1,0 +1,35 @@
+{
+  "cli": {
+    "version": ">= 14.0.2",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview"
+    },
+    "production": {
+      "autoIncrement": true,
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "track": "internal",
+        "changesNotSentForReview": true
+      },
+      "ios": {
+      "appleId": "mastfish@gmail.com",
+      "ascAppId": "6741306670",
+      "appleTeamId": "M8VYF5C359"
+    }
+    }
+  }
+}
+

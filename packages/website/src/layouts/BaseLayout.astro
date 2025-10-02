@@ -1,0 +1,31 @@
+---
+import { getImage } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+import Footer from "@src/components/footer.astro";
+import Navbar from "@src/components/navbar.astro";
+import "@src/styles/global.css";
+import logo from "/src/assets/logo.png";
+const { pageTitle, metaDescription } = Astro.props;
+let logo_data = await getImage({ src: logo, width: 32, format: "png" });
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href={logo_data.src} />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="4B0082" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    {metaDescription && <meta name="description" content={metaDescription} />}
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <ClientRouter fallback="none" />
+  </head><body>
+    <Navbar />
+    <div class="m-8">
+      <slot />
+    </div>
+    <Footer />
+  </body>
+</html>
