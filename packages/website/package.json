@@ -11,11 +11,12 @@
     "check": "astro check",
     "lint": "eslint \"src/**/*.{js,astro}\"",
     "test": "npx tsx ./src/test.ts",
+    "type-check":  "npx tsc --noEmit",
     "tsv-to-json": "npx tsx ./src/tsv-to-json.ts",
     "gen": "npx tsx ./src/genimg.ts"
   },
   "dependencies": {
-    "@mono/shared": "workspace:*",
+    "shared": "file:*",
     "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^4.3.5",
     "@astrojs/preact": "^4.1.1",

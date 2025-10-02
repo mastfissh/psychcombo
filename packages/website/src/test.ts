@@ -1,6 +1,4 @@
 import * as fs from "fs";
-// import { linkify } from "./util.ts";
-// import {linkify} from 
 import {linkify} from '@mono/shared'
 let main = async function () {
   const input = fs.readFileSync("./public/risks.json", "utf8");
