@@ -5,15 +5,5 @@
   "preview_urls": true,
   "assets": {
     "directory": "./dist",
-  },
-  "env": {
-    "production": {
-      "routes": [
-        {
-          "pattern": "psychcombo.com/*",
-          "custom_domain": true
-        }
-      ]
-    }
   }
 }
