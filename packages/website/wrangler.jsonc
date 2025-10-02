@@ -7,6 +7,13 @@
     "directory": "./dist",
   },
   "env": {
-    "production":{}
+    "production": {
+      "routes": [
+        {
+          "pattern": "psychcombo.com/*",
+          "custom_domain": true
+        }
+      ]
+    }
   }
 }
