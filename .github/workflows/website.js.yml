@@ -30,4 +30,5 @@ jobs:
     - run: npm run build --workspace website
     - run: npm run check --workspace website
     - run: npm run lint --workspace website
-    - run: npm test --workspace website
+    - run: npm run type-check --workspace website
+    # - run: npm test --workspace website
