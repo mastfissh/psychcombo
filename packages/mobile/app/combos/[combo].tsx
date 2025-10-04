@@ -3,7 +3,7 @@ import Disclaimer from "@/components/Disclaimer";
 import MarkdownList from "@/components/MarkDownList";
 import { RiskPanel } from "@/components/RiskPanel";
 import { cachedCombos, cachedPsychs, cachedRisks } from "@/lib/fetchData";
-import { confidence, risk } from "@mono/shared";
+import { confidence, risk } from "@/lib/util";;
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
