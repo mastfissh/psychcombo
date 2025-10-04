@@ -1,4 +1,4 @@
-import { risk_to_bg } from "@/lib/util";
+import { risk_to_bg } from "@mono/shared";
 import React, { Fragment } from "react";
 import { Text, View } from "react-native";
 
@@ -54,7 +54,7 @@ const KeySection = () => {
       </View>
       <Text className="flex space-x-4">
         <AntDesign
-          name="exclamationcircleo"
+          name="exclamation-circle"
           size={24}
           color="black"
           className="h-7 w-7 inline"

@@ -96,7 +96,7 @@ const App = () => {
                   {entry.data.neutral_effects}
                 </Text>
                 <Text>
-                  <AntDesign name="exclamationcircle" size={14} color="grey" />{" "}
+                  <AntDesign name="exclamation-circle" size={14} color="grey" />{" "}
                   {entry.data.negative_effects}
                 </Text>
               </View>

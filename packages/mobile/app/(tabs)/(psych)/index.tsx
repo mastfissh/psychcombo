@@ -1,5 +1,5 @@
 import { cachedPsychs, cachedRisks } from "@/lib/fetchData";
-import { linkify } from "@/lib/util";
+import { linkify } from "@mono/shared";
 import { Link } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
