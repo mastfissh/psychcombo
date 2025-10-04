@@ -5,7 +5,8 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "@mono/shared": ["../shared/index.ts"]
     }
   },
   "include": [
