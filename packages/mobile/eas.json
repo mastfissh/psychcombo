@@ -6,11 +6,9 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
       "channel": "development"
     },
     "preview": {
-      "distribution": "internal",
       "channel": "preview"
     },
     "production": {
@@ -20,10 +18,6 @@
   },
   "submit": {
     "production": {
-      "android": {
-        "track": "internal",
-        "changesNotSentForReview": true
-      },
       "ios": {
       "appleId": "mastfish@gmail.com",
       "ascAppId": "6741306670",
