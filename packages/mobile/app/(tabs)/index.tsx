@@ -97,6 +97,8 @@ const App = () => {
 
   return (
     <Fragment>
+      <Text className="bg-red-200 bg-orange-200 bg-amber-200 bg-cyan-200 bg-violet-200 bg-blue-200 bg-slate-200"></Text>
+
       <View className="flex-1 m-2">
         <ModalPicker
           modalVisible={modalVisible}
