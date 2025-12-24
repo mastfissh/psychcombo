@@ -1,5 +1,5 @@
 import combosFallback from "@mono/shared/combos.json";
-import risksFallback from "@mono/shared//risks.json";
+import risksFallback from "@mono/shared/risks.json";
 import psychoactivesFallback from "@mono/shared/psychoactives.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
