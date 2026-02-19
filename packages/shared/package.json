@@ -1,13 +1,15 @@
 {
-   "name": "@mono/shared",
+  "name": "shared",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared utilities and types for psychcombo monorepo",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
-  
 }
