@@ -6,7 +6,7 @@ import Fallback from "@src/components/fallback_combo.astro";
 import EditPage from "@src/components/edit_page.astro";
 import RiskPanel from "@src/components/risk_panel.astro";
 import BaseLayout from "@src/layouts/BaseLayout.astro";
-import { confidence, risk } from "@mono/shared";
+import { confidence, risk } from "shared";
 import { getCollection, getEntry } from "astro:content";
 
 export async function getStaticPaths() {

@@ -1,6 +1,6 @@
 import { Component, Fragment } from "preact";
 import type { RisksData } from "@src/risks";
-import { confidence, displayname, linkify, risk, risk_to_bg } from "@mono/shared";
+import { confidence, displayname, linkify, risk, risk_to_bg } from "shared";
 
 interface SearchDatum {
   slug: string;
