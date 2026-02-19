@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import {linkify} from '@mono/shared'
+import {linkify} from 'shared'
 let main = async function () {
   const input = fs.readFileSync("./public/risks.json", "utf8");
   let data = JSON.parse(input);

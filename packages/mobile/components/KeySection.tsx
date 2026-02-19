@@ -1,4 +1,4 @@
-import { risk_to_bg } from "@mono/shared";
+import { risk_to_bg } from "shared";
 import React, { Fragment } from "react";
 import { Text, View } from "react-native";
 

@@ -1,4 +1,4 @@
-import { combo, linkify } from "@mono/shared";
+import { combo, linkify } from "shared";
 import { Component, Fragment } from "preact";
 
 interface Entry {

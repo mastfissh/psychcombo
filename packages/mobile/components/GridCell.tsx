@@ -1,4 +1,4 @@
-import { risk, risk_to_bg } from "@mono/shared";
+import { risk, risk_to_bg } from "shared";
 import { Link } from "expo-router";
 import React from "react";
 import { View } from "react-native";
