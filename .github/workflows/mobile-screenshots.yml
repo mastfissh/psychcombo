@@ -1,0 +1,132 @@
+name: Mobile App PR Screenshots
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'packages/mobile/**'
+      - 'packages/shared/**'
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Export mobile app for web
+        run: |
+          cd packages/mobile
+          npx expo export --platform web
+      
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      
+      - name: Start preview server
+        run: |
+          cd packages/mobile/dist
+          python3 -m http.server 3335 &
+          # Wait for server to be ready
+          for i in {1..10}; do
+            if curl -s http://localhost:3335 > /dev/null; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... ($i/10)"
+            sleep 1
+          done
+      
+      - name: Take screenshots
+        run: |
+          mkdir -p screenshots
+          
+          # Mobile viewport (iPhone 14 Pro)
+          npx playwright screenshot \
+            --viewport-size=393,852 \
+            http://localhost:3335 \
+            screenshots/grid-tab.png
+          
+          # Wait a bit for any async content
+          sleep 2
+          
+          # Grid tab with modal (we'll try to capture it)
+          npx playwright screenshot \
+            --viewport-size=393,852 \
+            http://localhost:3335 \
+            screenshots/grid-tab-loaded.png
+          
+          # Info/Psychoactives list tab
+          # Note: We can't easily navigate tabs without proper E2E testing
+          # So we'll document the main screens that are accessible
+          
+          # Tablet viewport (iPad)
+          npx playwright screenshot \
+            --viewport-size=820,1180 \
+            http://localhost:3335 \
+            screenshots/grid-tab-tablet.png
+      
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-pr-screenshots
+          path: screenshots/
+          retention-days: 30
+      
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            const screenshotDir = 'screenshots';
+            const files = fs.readdirSync(screenshotDir);
+            
+            let comment = '## 📱 Mobile App Screenshots (Web Preview)\n\n';
+            comment += 'Screenshots have been generated from the Expo web build of the mobile app. ';
+            comment += `Download the artifacts to view them, or check the [Actions run](${context.payload.repository.html_url}/actions/runs/${context.runId}).\n\n`;
+            comment += '> ⚠️ **Note:** These screenshots are from the web version of the Expo app. ';
+            comment += 'Native iOS/Android screenshots would require additional setup with EAS Build or Maestro.\n\n';
+            comment += '### Screens captured:\n\n';
+            
+            const screenshots = [
+              { file: 'grid-tab.png', name: 'Grid Tab (Initial)', viewport: '393x852 (iPhone 14 Pro)' },
+              { file: 'grid-tab-loaded.png', name: 'Grid Tab (Loaded)', viewport: '393x852 (iPhone 14 Pro)' },
+              { file: 'grid-tab-tablet.png', name: 'Grid Tab (Tablet)', viewport: '820x1180 (iPad)' }
+            ];
+            
+            for (const shot of screenshots) {
+              if (files.includes(shot.file)) {
+                comment += `- ✅ **${shot.name}** (${shot.viewport})\n`;
+              }
+            }
+            
+            comment += `\n**Total screenshots:** ${files.length}\n`;
+            comment += '\n> 💡 **Tip:** Download the `mobile-pr-screenshots` artifact from the Actions tab to review all screenshots.\n';
+            comment += '\n### Limitations\n\n';
+            comment += '- Tab navigation requires E2E testing framework\n';
+            comment += '- Modal states require user interaction\n';
+            comment += '- Native features may not work in web preview\n';
+            comment += '\nFor comprehensive mobile testing, consider:\n';
+            comment += '- [Maestro](https://maestro.mobile.dev/) for UI testing\n';
+            comment += '- [Detox](https://wix.github.io/Detox/) for React Native E2E testing\n';
+            comment += '- EAS Build Preview with manual testing\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
