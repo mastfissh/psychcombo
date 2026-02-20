@@ -34,7 +34,7 @@
     "preact": "^10.27.2",
     "shared": "file:../shared",
     "sharp": "^0.34.4",
-    "tailwindcss": "4.1.13",
+    "tailwindcss": "^4.2.0",
     "typescript": "^5.9.3",
     "yaml": "^2.8.1"
   },
