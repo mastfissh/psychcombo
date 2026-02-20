@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+.astro/
+.expo/
+.next/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Generated files
+*.generated.*
+public/conf.json
+public/hash.json
+public/hidden.json
+public/risks-only.json
+public/risks.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Lock files (too large and auto-generated)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Cache
+.cache/
+.parcel-cache/
+.turbo/
+
+# Test coverage
+coverage/
+*.lcov
+
+# Environment files (may contain secrets)
+.env
+.env.local
+.env.*.local
+
+# Wrangler
+.wrangler/
+wrangler.toml
+
+# Mobile specific
+*.apk
+*.ipa
+*.app
+android/
+ios/
