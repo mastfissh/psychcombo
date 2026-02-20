@@ -103,7 +103,7 @@ The workflow only runs when:
 
 ### Technical details
 
-- **Build tool**: Expo CLI (`expo export:web`)
+- **Build tool**: Expo CLI (`expo export --platform web`)
 - **Browser**: Chromium via Playwright
 - **Screenshot tool**: Playwright CLI
 - **Server**: Python's built-in HTTP server
