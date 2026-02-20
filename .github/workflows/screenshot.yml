@@ -1,0 +1,126 @@
+name: PR Screenshots
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'packages/website/**'
+      - 'packages/shared/**'
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build website
+        run: npm run build --workspace website
+      
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      
+      - name: Start preview server
+        run: |
+          cd packages/website/dist
+          python3 -m http.server 3334 &
+          sleep 5
+      
+      - name: Take screenshots
+        run: |
+          npx playwright screenshot \
+            --viewport-size=1280,720 \
+            http://localhost:3334 \
+            screenshots/homepage.png
+          
+          npx playwright screenshot \
+            --viewport-size=1280,720 \
+            http://localhost:3334/psychoactives \
+            screenshots/psychoactives.png
+          
+          npx playwright screenshot \
+            --viewport-size=1280,720 \
+            http://localhost:3334/psychoactives/alcohol \
+            screenshots/psychoactive-detail.png
+          
+          npx playwright screenshot \
+            --viewport-size=1280,720 \
+            http://localhost:3334/combos/alcohol-benzodiazepines \
+            screenshots/combo-detail.png
+          
+          npx playwright screenshot \
+            --viewport-size=1280,720 \
+            http://localhost:3334/privacy-policy \
+            screenshots/privacy-policy.png
+          
+          # Mobile viewport
+          npx playwright screenshot \
+            --viewport-size=390,844 \
+            http://localhost:3334 \
+            screenshots/homepage-mobile.png
+          
+          npx playwright screenshot \
+            --viewport-size=390,844 \
+            http://localhost:3334/psychoactives \
+            screenshots/psychoactives-mobile.png
+      
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-screenshots
+          path: screenshots/
+          retention-days: 30
+      
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            const screenshotDir = 'screenshots';
+            const files = fs.readdirSync(screenshotDir);
+            
+            let comment = '## 📸 Website Screenshots\n\n';
+            comment += 'Screenshots have been generated for this PR. ';
+            comment += `Download the artifacts to view them, or check the [Actions run](${context.payload.repository.html_url}/actions/runs/${context.runId}).\n\n`;
+            comment += '### Pages captured:\n\n';
+            
+            const screenshots = [
+              { file: 'homepage.png', name: 'Homepage (Desktop)', viewport: '1280x720' },
+              { file: 'psychoactives.png', name: 'Psychoactives List (Desktop)', viewport: '1280x720' },
+              { file: 'psychoactive-detail.png', name: 'Psychoactive Detail - Alcohol (Desktop)', viewport: '1280x720' },
+              { file: 'combo-detail.png', name: 'Combo Detail - Alcohol + Benzodiazepines (Desktop)', viewport: '1280x720' },
+              { file: 'privacy-policy.png', name: 'Privacy Policy (Desktop)', viewport: '1280x720' },
+              { file: 'homepage-mobile.png', name: 'Homepage (Mobile)', viewport: '390x844' },
+              { file: 'psychoactives-mobile.png', name: 'Psychoactives List (Mobile)', viewport: '390x844' }
+            ];
+            
+            for (const shot of screenshots) {
+              if (files.includes(shot.file)) {
+                comment += `- ✅ **${shot.name}** (${shot.viewport})\n`;
+              }
+            }
+            
+            comment += `\n**Total screenshots:** ${files.length}\n`;
+            comment += '\n> 💡 **Tip:** Download the `pr-screenshots` artifact from the Actions tab to review all screenshots.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
