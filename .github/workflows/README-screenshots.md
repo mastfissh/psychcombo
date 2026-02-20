@@ -67,7 +67,7 @@ If the workflow fails:
 
 When a PR is opened or updated that affects the mobile app or shared packages, the workflow:
 
-1. **Exports app for web** - Uses `expo export:web` to create a web build
+1. **Exports app for web** - Uses `expo export --platform web` to create a web build
 2. **Starts a local server** - Serves the exported web app
 3. **Takes screenshots** - Captures screenshots at mobile and tablet viewports
 4. **Uploads artifacts** - Makes screenshots available for download
@@ -78,7 +78,7 @@ When a PR is opened or updated that affects the mobile app or shared packages, t
 The workflow captures the initial app state at different viewports:
 
 #### Mobile (393x852 - iPhone 14 Pro)
-- Grid Tab (initial and loaded states)
+- Grid Tab
 
 #### Tablet (820x1180 - iPad)
 - Grid Tab

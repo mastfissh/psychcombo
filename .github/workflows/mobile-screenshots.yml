@@ -57,20 +57,7 @@ jobs:
           npx playwright screenshot \
             --viewport-size=393,852 \
             http://localhost:3335 \
-            screenshots/grid-tab.png
-          
-          # Wait a bit for any async content
-          sleep 2
-          
-          # Grid tab with modal (we'll try to capture it)
-          npx playwright screenshot \
-            --viewport-size=393,852 \
-            http://localhost:3335 \
-            screenshots/grid-tab-loaded.png
-          
-          # Info/Psychoactives list tab
-          # Note: We can't easily navigate tabs without proper E2E testing
-          # So we'll document the main screens that are accessible
+            screenshots/grid-tab-mobile.png
           
           # Tablet viewport (iPad)
           npx playwright screenshot \
@@ -102,8 +89,7 @@ jobs:
             comment += '### Screens captured:\n\n';
             
             const screenshots = [
-              { file: 'grid-tab.png', name: 'Grid Tab (Initial)', viewport: '393x852 (iPhone 14 Pro)' },
-              { file: 'grid-tab-loaded.png', name: 'Grid Tab (Loaded)', viewport: '393x852 (iPhone 14 Pro)' },
+              { file: 'grid-tab-mobile.png', name: 'Grid Tab (Mobile)', viewport: '393x852 (iPhone 14 Pro)' },
               { file: 'grid-tab-tablet.png', name: 'Grid Tab (Tablet)', viewport: '820x1180 (iPad)' }
             ];
             
