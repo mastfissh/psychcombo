@@ -4,7 +4,7 @@
  * Test script to verify CMS setup and data integrity
  */
 
-import { cmsClient } from '../src/lib/cms-client.ts'
+import { cmsClient } from './src/lib/cms-client'
 
 async function runTests() {
   console.log('🧪 Testing Payload CMS setup...\n')
