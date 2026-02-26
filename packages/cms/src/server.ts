@@ -30,12 +30,23 @@ const start = async () => {
   // GET all psychoactives
   app.get('/api/psychoactives', async (req, res) => {
     try {
-      const { limit = 100, page = 1, where } = req.query
+      const limit = Math.min(parseInt(req.query.limit as string) || 100, 1000)
+      const page = Math.max(parseInt(req.query.page as string) || 1, 1)
+      
+      let where
+      if (req.query.where) {
+        try {
+          where = JSON.parse(req.query.where as string)
+        } catch (e) {
+          return res.status(400).json({ error: 'Invalid where parameter: must be valid JSON' })
+        }
+      }
+      
       const result = await payload.find({
         collection: 'psychoactives',
-        limit: parseInt(limit as string),
-        page: parseInt(page as string),
-        where: where ? JSON.parse(where as string) : undefined,
+        limit,
+        page,
+        where,
       })
       res.json(result)
     } catch (error) {
@@ -69,12 +80,23 @@ const start = async () => {
   // GET all combos
   app.get('/api/combos', async (req, res) => {
     try {
-      const { limit = 100, page = 1, where } = req.query
+      const limit = Math.min(parseInt(req.query.limit as string) || 100, 1000)
+      const page = Math.max(parseInt(req.query.page as string) || 1, 1)
+      
+      let where
+      if (req.query.where) {
+        try {
+          where = JSON.parse(req.query.where as string)
+        } catch (e) {
+          return res.status(400).json({ error: 'Invalid where parameter: must be valid JSON' })
+        }
+      }
+      
       const result = await payload.find({
         collection: 'combos',
-        limit: parseInt(limit as string),
-        page: parseInt(page as string),
-        where: where ? JSON.parse(where as string) : undefined,
+        limit,
+        page,
+        where,
       })
       res.json(result)
     } catch (error) {
@@ -108,12 +130,23 @@ const start = async () => {
   // GET all risks
   app.get('/api/risks', async (req, res) => {
     try {
-      const { limit = 1000, page = 1, where } = req.query
+      const limit = Math.min(parseInt(req.query.limit as string) || 1000, 10000)
+      const page = Math.max(parseInt(req.query.page as string) || 1, 1)
+      
+      let where
+      if (req.query.where) {
+        try {
+          where = JSON.parse(req.query.where as string)
+        } catch (e) {
+          return res.status(400).json({ error: 'Invalid where parameter: must be valid JSON' })
+        }
+      }
+      
       const result = await payload.find({
         collection: 'risks',
-        limit: parseInt(limit as string),
-        page: parseInt(page as string),
-        where: where ? JSON.parse(where as string) : undefined,
+        limit,
+        page,
+        where,
       })
       res.json(result)
     } catch (error) {

@@ -90,7 +90,7 @@ export class PayloadCMSClient {
       const response = await fetch(url)
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`)
       }
       
       return await response.json()
@@ -179,27 +179,66 @@ export const cmsClient = new PayloadCMSClient()
 
 // Helper functions for convenience
 
+/**
+ * Get all psychoactives by fetching all pages
+ */
 export async function getAllPsychoactives(): Promise<Psychoactive[]> {
-  const response = await cmsClient.getPsychoactives({ limit: 1000 })
-  return response.docs
+  const allDocs: Psychoactive[] = []
+  let page = 1
+  let hasMore = true
+  
+  while (hasMore) {
+    const response = await cmsClient.getPsychoactives({ limit: 100, page })
+    allDocs.push(...response.docs)
+    hasMore = response.hasNextPage
+    page++
+  }
+  
+  return allDocs
 }
 
 export async function getPsychoactiveBySlug(slug: string): Promise<Psychoactive> {
   return cmsClient.getPsychoactive(slug)
 }
 
+/**
+ * Get all combos by fetching all pages
+ */
 export async function getAllCombos(): Promise<Combo[]> {
-  const response = await cmsClient.getCombos({ limit: 10000 })
-  return response.docs
+  const allDocs: Combo[] = []
+  let page = 1
+  let hasMore = true
+  
+  while (hasMore) {
+    const response = await cmsClient.getCombos({ limit: 100, page })
+    allDocs.push(...response.docs)
+    hasMore = response.hasNextPage
+    page++
+  }
+  
+  return allDocs
 }
 
 export async function getComboBySlug(slug: string): Promise<Combo> {
   return cmsClient.getCombo(slug)
 }
 
+/**
+ * Get all risks by fetching all pages
+ */
 export async function getAllRisks(): Promise<Risk[]> {
-  const response = await cmsClient.getRisks({ limit: 10000 })
-  return response.docs
+  const allDocs: Risk[] = []
+  let page = 1
+  let hasMore = true
+  
+  while (hasMore) {
+    const response = await cmsClient.getRisks({ limit: 1000, page })
+    allDocs.push(...response.docs)
+    hasMore = response.hasNextPage
+    page++
+  }
+  
+  return allDocs
 }
 
 export async function getRiskForCombination(drug1: string, drug2: string): Promise<Risk> {
