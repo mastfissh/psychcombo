@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsychCombo CMS Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0;
+        }
+        
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-tab:hover {
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .card-header h2 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .search-box {
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 PsychCombo CMS Admin</h1>
+        <p>Content Management System - Edit psychoactives, combos, and risks</p>
+    </div>
+
+    <div class="container">
+        <div id="alertContainer"></div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('psychoactives')">💊 Psychoactives</button>
+            <button class="nav-tab" onclick="switchTab('combos')">🔗 Combos</button>
+            <button class="nav-tab" onclick="switchTab('risks')">⚠️ Risks</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="statPsychoactives">-</h3>
+                    <p>Psychoactives</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statCombos">-</h3>
+                    <p>Combinations</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statRisks">-</h3>
+                    <p>Risk Entries</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Welcome to PsychCombo CMS</h2>
+                </div>
+                <p style="line-height: 1.6; color: #555;">
+                    This admin interface allows you to manage all content in the PsychCombo database. 
+                    Use the tabs above to:
+                </p>
+                <ul style="margin: 1rem 0 1rem 2rem; line-height: 2;">
+                    <li><strong>Psychoactives:</strong> Create, edit, and delete substance entries</li>
+                    <li><strong>Combos:</strong> Manage drug combination information</li>
+                    <li><strong>Risks:</strong> Update risk assessments for drug combinations</li>
+                </ul>
+                <div class="alert alert-info" style="margin-top: 1.5rem;">
+                    <strong>💡 Tip:</strong> All changes are saved directly to the database via the Payload CMS API.
+                </div>
+            </div>
+        </div>
+
+        <!-- Psychoactives Tab -->
+        <div id="psychoactives" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Psychoactives</h2>
+                    <button class="btn btn-primary" onclick="showCreatePsychoactiveModal()">
+                        ➕ Create New
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="searchPsychoactives" placeholder="🔍 Search psychoactives..." 
+                           oninput="searchPsychoactives()">
+                </div>
+                
+                <div id="psychoactivesLoading" class="loading">
+                    <div class="spinner"></div>
+                    Loading psychoactives...
+                </div>
+                
+                <div id="psychoactivesTable" style="display: none;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Slug</th>
+                                    <th>Also Known As</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="psychoactivesTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="psychoactivesPagination" class="pagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combos Tab -->
+        <div id="combos" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Drug Combinations</h2>
+                    <button class="btn btn-primary" onclick="showCreateComboModal()">
+                        ➕ Create New
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="searchCombos" placeholder="🔍 Search combos..." 
+                           oninput="searchCombos()">
+                </div>
+                
+                <div id="combosLoading" class="loading">
+                    <div class="spinner"></div>
+                    Loading combinations...
+                </div>
+                
+                <div id="combosTable" style="display: none;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Drug 1</th>
+                                    <th>Drug 2</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="combosTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="combosPagination" class="pagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risks Tab -->
+        <div id="risks" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Risk Assessments</h2>
+                    <button class="btn btn-primary" onclick="showCreateRiskModal()">
+                        ➕ Create New
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="searchRisks" placeholder="🔍 Search risks..." 
+                           oninput="searchRisks()">
+                </div>
+                
+                <div id="risksLoading" class="loading">
+                    <div class="spinner"></div>
+                    Loading risks...
+                </div>
+                
+                <div id="risksTable" style="display: none;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Drug 1</th>
+                                    <th>Drug 2</th>
+                                    <th>Risk Level</th>
+                                    <th>Confidence</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="risksTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="risksPagination" class="pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals will be injected here -->
+    <div id="modalContainer"></div>
+
+    <script src="/admin-edit.js"></script>
+</body>
+</html>

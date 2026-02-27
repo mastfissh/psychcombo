@@ -52,6 +52,7 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URL || 'file:./data.db',
     },
+    push: false,
   }),
   cors: [
     process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
