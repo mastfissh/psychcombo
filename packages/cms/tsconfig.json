@@ -4,7 +4,11 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "ESNext",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "jsx": "preserve",
     "outDir": "./dist",
     "rootDir": "./src",
@@ -16,14 +20,27 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@payload-config": ["./src/payload.config.ts"]
+      "@payload-config": [
+        "./src/payload.config.ts"
+      ]
     },
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true
   },
-  "include": ["src/**/*", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "dist", ".next"]
+  "include": [
+    "src/**/*",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next"
+  ]
 }
