@@ -41,6 +41,7 @@
   "exclude": [
     "node_modules",
     "dist",
-    ".next"
+    ".next",
+    "src/app/(payload)/admin/importMap.js"
   ]
 }

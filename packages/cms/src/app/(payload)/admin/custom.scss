@@ -1,1 +1,8 @@
+/* Declare CSS layer order for Payload CMS */
+/* This must be imported before any other Payload styles */
+@layer payload-default;
+
+/* Import Payload UI styles */
+@import '@payloadcms/ui/scss';
+
 /* You can add custom styles for the admin panel here */
