@@ -1,15 +1,10 @@
+import { withPayload } from '@payloadcms/next/withPayload'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Externalize server-only modules
-      config.externals = config.externals || []
-      config.externals.push({
-        'better-sqlite3': 'commonjs better-sqlite3',
-      })
-    }
-    return config
-  },
+  experimental: {
+    reactCompiler: false
+  }
 }
 
-export default nextConfig
+export default withPayload(nextConfig)
