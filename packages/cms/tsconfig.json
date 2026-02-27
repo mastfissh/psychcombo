@@ -4,7 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "ESNext",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
     "outDir": "./dist",
     "rootDir": "./src",
     "declaration": true,
@@ -13,8 +14,16 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@payload-config": ["./src/payload.config.ts"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "dist", ".next"]
 }
