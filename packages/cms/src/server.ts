@@ -11,6 +11,9 @@ const dirname = path.dirname(filename)
 const app = express()
 app.use(express.json())
 
+// Serve static files from public directory
+app.use(express.static(path.join(dirname, '../public')))
+
 const start = async () => {
   // Dynamically import Payload
   const { default: payload } = await import('payload')
@@ -185,26 +188,14 @@ const start = async () => {
     res.json({ status: 'ok', message: 'Payload CMS API is running' })
   })
 
-  // Root endpoint
+  // Root endpoint - redirect to admin interface
   app.get('/', (req, res) => {
-    res.json({
-      message: 'PsychCombo Payload CMS API',
-      endpoints: {
-        psychoactives: {
-          list: '/api/psychoactives',
-          get: '/api/psychoactives/:slug'
-        },
-        combos: {
-          list: '/api/combos',
-          get: '/api/combos/:slug'
-        },
-        risks: {
-          list: '/api/risks',
-          get: '/api/risks/:drug1/:drug2'
-        },
-        health: '/health'
-      }
-    })
+    res.redirect('/admin.html')
+  })
+  
+  // Admin interface endpoint
+  app.get('/admin', (req, res) => {
+    res.redirect('/admin.html')
   })
 
   const PORT = process.env.PORT || 3000
@@ -213,6 +204,7 @@ const start = async () => {
     console.log(`✅ Payload CMS API listening on port ${PORT}`)
     console.log(`📍 API available at http://localhost:${PORT}`)
     console.log(`🔍 Health check: http://localhost:${PORT}/health`)
+    console.log(`⚙️  Admin interface: http://localhost:${PORT}/admin`)
   })
 }
 

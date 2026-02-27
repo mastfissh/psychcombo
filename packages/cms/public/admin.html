@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsychCombo CMS Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            color: #333;
+        }
+        
+        .tab.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            margin-bottom: -2px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-sr { background: #fee2e2; color: #991b1b; }
+        .badge-gr { background: #fed7aa; color: #9a3412; }
+        .badge-mr { background: #fef3c7; color: #92400e; }
+        .badge-lrs { background: #d1fae5; color: #065f46; }
+        .badge-lrd { background: #dbeafe; color: #1e40af; }
+        .badge-lr { background: #e0e7ff; color: #3730a3; }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .api-docs {
+            line-height: 1.8;
+        }
+        
+        .api-docs h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #111827;
+        }
+        
+        .api-docs p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 PsychCombo CMS Admin</h1>
+        <p class="subtitle">Content Management System - Browse and View Content</p>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="stat-psychoactives">--</div>
+                <div class="stat-label">Psychoactives</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-combos">--</div>
+                <div class="stat-label">Combos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-risks">--</div>
+                <div class="stat-label">Risk Entries</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('psychoactives', event)">Psychoactives</button>
+            <button class="tab" onclick="switchTab('combos', event)">Combos</button>
+            <button class="tab" onclick="switchTab('risks', event)">Risks</button>
+            <button class="tab" onclick="switchTab('api', event)">API Documentation</button>
+        </div>
+        
+        <div id="psychoactives" class="tab-content active">
+            <div class="search-box">
+                <input type="text" id="search-psychoactives" placeholder="Search psychoactives..." onkeyup="searchPsychoactives()">
+                <button class="btn" onclick="loadPsychoactives()">Refresh</button>
+            </div>
+            <div id="psychoactives-content" class="loading">Loading...</div>
+        </div>
+        
+        <div id="combos" class="tab-content">
+            <div class="search-box">
+                <input type="text" id="search-combos" placeholder="Search combos..." onkeyup="searchCombos()">
+                <button class="btn" onclick="loadCombos()">Refresh</button>
+            </div>
+            <div id="combos-content" class="loading">Loading...</div>
+        </div>
+        
+        <div id="risks" class="tab-content">
+            <div class="search-box">
+                <input type="text" id="search-risks" placeholder="Search risks..." onkeyup="searchRisks()">
+                <button class="btn" onclick="loadRisks()">Refresh</button>
+            </div>
+            <div id="risks-content" class="loading">Loading...</div>
+        </div>
+        
+        <div id="api" class="tab-content">
+            <div class="api-docs">
+                <h2>API Endpoints</h2>
+                <p>Use these REST API endpoints to manage content programmatically:</p>
+                
+                <h3>Psychoactives</h3>
+                <p><code>GET /api/psychoactives</code> - List all psychoactives</p>
+                <p><code>GET /api/psychoactives/:slug</code> - Get single psychoactive</p>
+                
+                <h3>Combos</h3>
+                <p><code>GET /api/combos</code> - List all combos</p>
+                <p><code>GET /api/combos/:slug</code> - Get single combo</p>
+                
+                <h3>Risks</h3>
+                <p><code>GET /api/risks</code> - List all risks</p>
+                <p><code>GET /api/risks/:drug1/:drug2</code> - Get risk for combination</p>
+                
+                <h3>Health</h3>
+                <p><code>GET /health</code> - API health check</p>
+                
+                <p style="margin-top: 30px;">For full API documentation and content editing instructions, see <strong>ADMIN_GUIDE.md</strong> in the CMS package directory.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = window.location.origin;
+        
+        let psychoactivesData = [];
+        let combosData = [];
+        let risksData = [];
+        
+        async function loadStats() {
+            try {
+                const [psychoactivesRes, combosRes, risksRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/psychoactives?limit=1`),
+                    fetch(`${API_BASE}/api/combos?limit=1`),
+                    fetch(`${API_BASE}/api/risks?limit=1`)
+                ]);
+                
+                const psychoactives = await psychoactivesRes.json();
+                const combos = await combosRes.json();
+                const risks = await risksRes.json();
+                
+                document.getElementById('stat-psychoactives').textContent = psychoactives.totalDocs || 0;
+                document.getElementById('stat-combos').textContent = combos.totalDocs || 0;
+                document.getElementById('stat-risks').textContent = risks.totalDocs || 0;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+        
+        async function loadPsychoactives() {
+            const content = document.getElementById('psychoactives-content');
+            content.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/psychoactives?limit=100`);
+                const data = await response.json();
+                psychoactivesData = data.docs || [];
+                renderPsychoactives(psychoactivesData);
+            } catch (error) {
+                content.innerHTML = `<div class="error">Failed to load psychoactives: ${error.message}</div>`;
+            }
+        }
+        
+        function renderPsychoactives(data) {
+            const content = document.getElementById('psychoactives-content');
+            if (!data.length) {
+                content.innerHTML = '<p>No psychoactives found.</p>';
+                return;
+            }
+            
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Slug</th>
+                            <th>Aliases</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(item => `
+                            <tr>
+                                <td><strong>${item.title}</strong></td>
+                                <td><code>${item.slug}</code></td>
+                                <td>${item.aka ? item.aka.map(a => a.alias).slice(0, 3).join(', ') : '-'}</td>
+                                <td class="actions">
+                                    <button class="btn btn-small btn-secondary" onclick="viewDetails('psychoactives', '${item.slug}')">View JSON</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            content.innerHTML = html;
+        }
+        
+        function searchPsychoactives() {
+            const query = document.getElementById('search-psychoactives').value.toLowerCase();
+            const filtered = psychoactivesData.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.slug.toLowerCase().includes(query) ||
+                (item.aka && item.aka.some(a => a.alias.toLowerCase().includes(query)))
+            );
+            renderPsychoactives(filtered);
+        }
+        
+        async function loadCombos() {
+            const content = document.getElementById('combos-content');
+            content.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/combos?limit=100`);
+                const data = await response.json();
+                combosData = data.docs || [];
+                renderCombos(combosData);
+            } catch (error) {
+                content.innerHTML = `<div class="error">Failed to load combos: ${error.message}</div>`;
+            }
+        }
+        
+        function renderCombos(data) {
+            const content = document.getElementById('combos-content');
+            if (!data.length) {
+                content.innerHTML = '<p>No combos found.</p>';
+                return;
+            }
+            
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Drug 1</th>
+                            <th>Drug 2</th>
+                            <th>Slug</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(item => `
+                            <tr>
+                                <td><strong>${item.title}</strong></td>
+                                <td><code>${item.drug1}</code></td>
+                                <td><code>${item.drug2}</code></td>
+                                <td><code>${item.slug}</code></td>
+                                <td class="actions">
+                                    <button class="btn btn-small btn-secondary" onclick="viewDetails('combos', '${item.slug}')">View JSON</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            content.innerHTML = html;
+        }
+        
+        function searchCombos() {
+            const query = document.getElementById('search-combos').value.toLowerCase();
+            const filtered = combosData.filter(item => 
+                item.title.toLowerCase().includes(query) ||
+                item.drug1.toLowerCase().includes(query) ||
+                item.drug2.toLowerCase().includes(query) ||
+                item.slug.toLowerCase().includes(query)
+            );
+            renderCombos(filtered);
+        }
+        
+        async function loadRisks() {
+            const content = document.getElementById('risks-content');
+            content.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/risks?limit=100`);
+                const data = await response.json();
+                risksData = data.docs || [];
+                renderRisks(risksData);
+            } catch (error) {
+                content.innerHTML = `<div class="error">Failed to load risks: ${error.message}</div>`;
+            }
+        }
+        
+        function renderRisks(data) {
+            const content = document.getElementById('risks-content');
+            if (!data.length) {
+                content.innerHTML = '<p>No risks found.</p>';
+                return;
+            }
+            
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Drug 1</th>
+                            <th>Drug 2</th>
+                            <th>Risk Level</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(item => `
+                            <tr>
+                                <td><code>${item.drug1}</code></td>
+                                <td><code>${item.drug2}</code></td>
+                                <td><span class="badge badge-${item.risk_level.toLowerCase()}">${item.risk_level}</span></td>
+                                <td>${item.confidence || '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            content.innerHTML = html;
+        }
+        
+        function searchRisks() {
+            const query = document.getElementById('search-risks').value.toLowerCase();
+            const filtered = risksData.filter(item => 
+                item.drug1.toLowerCase().includes(query) ||
+                item.drug2.toLowerCase().includes(query) ||
+                item.risk_level.toLowerCase().includes(query)
+            );
+            renderRisks(filtered);
+        }
+        
+        function switchTab(tabName, event) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            
+            // Load data if not loaded
+            if (tabName === 'psychoactives' && psychoactivesData.length === 0) {
+                loadPsychoactives();
+            } else if (tabName === 'combos' && combosData.length === 0) {
+                loadCombos();
+            } else if (tabName === 'risks' && risksData.length === 0) {
+                loadRisks();
+            }
+        }
+        
+        function viewDetails(collection, slug) {
+            window.open(`/api/${collection}/${slug}`, '_blank');
+        }
+        
+        // Load initial data
+        loadStats();
+        loadPsychoactives();
+    </script>
+</body>
+</html>

@@ -19,13 +19,42 @@ This package contains the Payload CMS implementation for managing PsychCombo con
 
 ## Development
 
-Start the CMS development server:
+Start the CMS development server with admin interface:
 
 ```bash
 npm run dev --workspace cms
 ```
 
-The admin panel will be available at http://localhost:3000/admin
+**Access Points:**
+- **Admin Panel**: http://localhost:3000/admin
+- **REST API**: http://localhost:3000/api
+- **GraphQL**: http://localhost:3000/graphql (if enabled)
+
+### First Time Setup
+
+1. Navigate to http://localhost:3000/admin
+2. Create your first admin user:
+   - Email: your-email@example.com
+   - Password: (minimum 8 characters)
+   - Name: Your Name (optional)
+3. Click **Create** to access the admin panel
+
+## Admin Interface
+
+The admin interface provides a browser-based UI for viewing and browsing content. See [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) for detailed instructions.
+
+**Quick Access:**
+- **Admin UI**: http://localhost:3000/admin (browse content)
+- **API Docs**: http://localhost:3000/admin (see API Documentation tab)
+
+### Features:
+- Browse all psychoactives, combos, and risks
+- Search and filter content
+- View statistics (total counts)
+- Access raw JSON data
+- API endpoint reference
+
+**Note:** The admin interface is currently read-only for browsing. To create, update, or delete content, use the REST API directly with tools like Postman, curl, or HTTPie. See [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) for details.
 
 ## Database
 
