@@ -1,6 +1,16 @@
 # API Editing Guide
 
-Complete guide to editing Psych Combo content using the REST API.
+Complete guide to editing PsychCombo content using the REST API.
+
+## Overview
+
+While the Payload admin panel provides a user-friendly interface, you can also manage content programmatically using the REST API. This is useful for:
+
+- Automation and scripting
+- Integration with other tools
+- Bulk operations
+- Custom workflows
+- Programmatic access
 
 ## Table of Contents
 
@@ -16,7 +26,7 @@ Complete guide to editing Psych Combo content using the REST API.
 ### Prerequisites
 
 - CMS server running: `npm run dev --workspace cms`
-- API client (Postman, Insomnia, or curl)
+- API client (Postman, Insomnia, curl, or HTTPie)
 - Server at: `http://localhost:3000`
 
 ### Testing the Connection
@@ -28,14 +38,11 @@ curl http://localhost:3000/health
 
 ## Authentication
 
-Currently, the API is open for local development. In production, you'll need to:
+For API access, you need to authenticate:
 
-1. Create a user account
-2. Log in to get a token
-3. Include token in requests
+### Login
 
 ```bash
-# Login (when auth is enabled)
 POST http://localhost:3000/api/users/login
 Content-Type: application/json
 
@@ -43,14 +50,23 @@ Content-Type: application/json
   "email": "admin@example.com",
   "password": "your-password"
 }
+```
 
-# Response includes token
+Response includes a token:
+
+```json
 {
   "token": "eyJhbGc...",
   "user": {...}
 }
+```
 
-# Use token in subsequent requests
+### Using the Token
+
+Include the token in subsequent requests:
+
+```bash
+GET http://localhost:3000/api/psychoactives
 Authorization: Bearer eyJhbGc...
 ```
 
@@ -73,37 +89,30 @@ GET http://localhost:3000/api/psychoactives/lsd
 ```bash
 POST http://localhost:3000/api/psychoactives
 Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN
 
 {
   "title": "Psilocybin Mushrooms",
   "slug": "psilocybin-mushrooms",
   "aka": [
     { "alias": "Magic Mushrooms" },
-    { "alias": "Shrooms" },
-    { "alias": "Psilocybe" }
+    { "alias": "Shrooms" }
   ],
   "family_members": "4-HO-DMT, 4-PO-DMT",
   "duration_chart": {
     "total": "4-6 hours",
     "onset": "20-40 minutes",
-    "coming_up": "30-60 minutes",
-    "plateau": "2-3 hours",
-    "coming_down": "1-2 hours",
-    "after_effects": "2-8 hours"
+    "plateau": "2-3 hours"
   },
-  "positive_effects": "euphoria, visual hallucinations, introspection, spiritual experiences",
-  "negative_effects": "nausea, confusion, anxiety, paranoia",
-  "neutral_effects": "pupil dilation, altered perception, time distortion",
+  "positive_effects": "euphoria, visual hallucinations, introspection",
+  "negative_effects": "nausea, confusion, anxiety",
   "dosage_table": {
     "threshold": "0.25g",
     "light": "0.25-1g",
     "common": "1-2.5g",
     "strong": "2.5-5g",
     "heavy": "5g+"
-  },
-  "image_location": "/images/psilocybin.jpg",
-  "image_caption": "Psilocybe cubensis mushrooms",
-  "warnings": "Do not combine with MAOIs. Can trigger latent mental health issues."
+  }
 }
 ```
 
@@ -114,21 +123,10 @@ Update specific fields (PATCH):
 ```bash
 PATCH http://localhost:3000/api/psychoactives/:id
 Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN
 
 {
-  "warnings": "Updated warning text. Do not combine with MAOIs or SSRIs."
-}
-```
-
-Replace entire document (PUT - less common):
-
-```bash
-PUT http://localhost:3000/api/psychoactives/:id
-Content-Type: application/json
-
-{
-  "title": "Complete replacement object",
-  // ... all fields required
+  "warnings": "Updated warning text"
 }
 ```
 
@@ -136,6 +134,7 @@ Content-Type: application/json
 
 ```bash
 DELETE http://localhost:3000/api/psychoactives/:id
+Authorization: Bearer YOUR_TOKEN
 ```
 
 ### Common Psychoactive Fields
@@ -149,10 +148,7 @@ DELETE http://localhost:3000/api/psychoactives/:id
 | duration_chart | object | No | Time effects last |
 | positive_effects | string | No | Comma-separated |
 | negative_effects | string | No | Comma-separated |
-| neutral_effects | string | No | Comma-separated |
 | dosage_table | object | No | Dosage ranges |
-| image_location | string | No | Image path |
-| image_caption | string | No | Image description |
 | warnings | string | No | Safety warnings |
 
 ## Editing Combos
@@ -174,6 +170,7 @@ GET http://localhost:3000/api/combos/lsd_mdma
 ```bash
 POST http://localhost:3000/api/combos
 Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN
 
 {
   "title": "LSD + Psilocybin",
@@ -188,19 +185,13 @@ Content-Type: application/json
           "type": "heading",
           "tag": "h2",
           "children": [
-            {
-              "type": "text",
-              "text": "Overview"
-            }
+            {"type": "text", "text": "Overview"}
           ]
         },
         {
           "type": "paragraph",
           "children": [
-            {
-              "type": "text",
-              "text": "Combining LSD and psilocybin mushrooms is generally not recommended..."
-            }
+            {"type": "text", "text": "Description here..."}
           ]
         }
       ]
@@ -209,13 +200,12 @@ Content-Type: application/json
 }
 ```
 
-**Note:** The `content` field uses Lexical editor format. For simple text, you can also use markdown format in migration.
-
 ### Update Combo
 
 ```bash
 PATCH http://localhost:3000/api/combos/:id
 Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN
 
 {
   "title": "Updated Title"
@@ -226,17 +216,8 @@ Content-Type: application/json
 
 ```bash
 DELETE http://localhost:3000/api/combos/:id
+Authorization: Bearer YOUR_TOKEN
 ```
-
-### Combo Fields
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| title | string | Yes | Combination name |
-| slug | string | Yes | URL identifier |
-| drug1 | string | Yes | First drug slug |
-| drug2 | string | Yes | Second drug slug |
-| content | object | No | Rich text content |
 
 ## Editing Risks
 
@@ -257,6 +238,7 @@ GET http://localhost:3000/api/risks/lsd/mdma
 ```bash
 POST http://localhost:3000/api/risks
 Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN
 
 {
   "drug1": "lsd",
@@ -272,6 +254,7 @@ Content-Type: application/json
 ```bash
 PATCH http://localhost:3000/api/risks/:id
 Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN
 
 {
   "risk_level": "MR",
@@ -283,6 +266,7 @@ Content-Type: application/json
 
 ```bash
 DELETE http://localhost:3000/api/risks/:id
+Authorization: Bearer YOUR_TOKEN
 ```
 
 ### Risk Levels
@@ -348,109 +332,73 @@ GET /api/psychoactives?sort=-createdAt
 GET /api/psychoactives?select=title,slug,aka
 ```
 
-## Using Postman
+## Using API Clients
 
-### Setting Up
+### Postman
 
-1. Download Postman: https://www.postman.com/downloads/
-2. Create a new collection: "PsychCombo CMS"
-3. Add environment with variable:
-   - `base_url`: `http://localhost:3000`
+1. Download: https://www.postman.com/downloads/
+2. Create collection: "PsychCombo CMS"
+3. Add environment variable `base_url`: `http://localhost:3000`
+4. Create requests for each endpoint
+5. Use `{{base_url}}` in URLs
+6. Add Authorization header with token
 
-### Example Request
+### Insomnia
 
-1. New Request → POST
-2. URL: `{{base_url}}/api/psychoactives`
-3. Headers:
-   - `Content-Type`: `application/json`
-4. Body → raw → JSON:
-   ```json
-   {
-     "title": "Test Substance",
-     "slug": "test-substance"
-   }
-   ```
-5. Send
+1. Download: https://insomnia.rest/download
+2. Create workspace
+3. Add requests
+4. Use environment variables
+5. Store token for reuse
 
-### Saving Requests
-
-- Save each request type (GET, POST, PATCH, DELETE)
-- Organize by collection (Psychoactives, Combos, Risks)
-- Add descriptions and examples
-
-## Using curl
-
-### Create
+### curl
 
 ```bash
+# Create
 curl -X POST http://localhost:3000/api/psychoactives \
   -H "Content-Type: application/json" \
-  -d '{
-    "title": "Test Substance",
-    "slug": "test-substance"
-  }'
-```
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"title": "Test", "slug": "test"}'
 
-### Read
-
-```bash
+# Read
 curl http://localhost:3000/api/psychoactives/lsd
-```
 
-### Update
-
-```bash
+# Update
 curl -X PATCH http://localhost:3000/api/psychoactives/:id \
   -H "Content-Type: application/json" \
-  -d '{
-    "warnings": "Updated warning"
-  }'
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"warnings": "Updated"}'
+
+# Delete
+curl -X DELETE http://localhost:3000/api/psychoactives/:id \
+  -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-### Delete
-
-```bash
-curl -X DELETE http://localhost:3000/api/psychoactives/:id
-```
-
-## Using VS Code REST Client
+### VS Code REST Client
 
 1. Install "REST Client" extension
-2. Create file: `cms-api.http`
-3. Add requests:
+2. Create `cms-api.http` file:
 
 ```http
-### Variables
 @baseUrl = http://localhost:3000
+@token = YOUR_TOKEN
 
-### Get all psychoactives
+### Get psychoactives
 GET {{baseUrl}}/api/psychoactives?limit=10
 
-### Get single psychoactive
+### Get single
 GET {{baseUrl}}/api/psychoactives/lsd
 
-### Create new psychoactive
+### Create new
 POST {{baseUrl}}/api/psychoactives
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "title": "New Substance",
   "slug": "new-substance"
 }
-
-### Update psychoactive
-PATCH {{baseUrl}}/api/psychoactives/PASTE_ID_HERE
-Content-Type: application/json
-
-{
-  "warnings": "Updated warning"
-}
-
-### Delete psychoactive
-DELETE {{baseUrl}}/api/psychoactives/PASTE_ID_HERE
 ```
-
-4. Click "Send Request" above each request
 
 ## Error Handling
 
@@ -468,6 +416,17 @@ DELETE {{baseUrl}}/api/psychoactives/PASTE_ID_HERE
 }
 ```
 
+**401 Unauthorized**
+```json
+{
+  "errors": [
+    {
+      "message": "Unauthorized"
+    }
+  ]
+}
+```
+
 **404 Not Found**
 ```json
 {
@@ -479,61 +438,36 @@ DELETE {{baseUrl}}/api/psychoactives/PASTE_ID_HERE
 }
 ```
 
-**500 Server Error**
-```json
-{
-  "errors": [
-    {
-      "message": "Internal server error"
-    }
-  ]
-}
-```
-
-### Validation
-
-- Slugs must be unique
-- Required fields must be provided
-- Field types must match schema
-- Rich text must be valid Lexical format
-
 ## Tips & Best Practices
 
-1. **Always test with GET first** - Understand the data structure
-2. **Use PATCH, not PUT** - Update only changed fields
-3. **Keep slugs URL-safe** - Use lowercase, hyphens, no spaces
-4. **Backup before bulk operations** - SQLite database is in `data.db`
-5. **Test locally** - Don't test destructive operations in production
-6. **Use consistent naming** - Follow existing patterns
-7. **Validate JSON** - Use a JSON validator before sending
-8. **Save request templates** - Reuse in Postman/Insomnia
-9. **Check response status** - 200/201 = success, 400/500 = error
-10. **Review existing entries** - Match the structure and style
+1. **Use the admin panel for manual editing** - It's easier for individual changes
+2. **Use the API for automation** - Scripts, imports, bulk operations
+3. **Always test with GET first** - Understand the data structure
+4. **Use PATCH, not PUT** - Update only changed fields
+5. **Keep slugs URL-safe** - Lowercase, hyphens, no spaces
+6. **Backup before bulk operations** - Database is in `data.db`
+7. **Test locally first** - Don't test in production
+8. **Validate JSON** - Use a validator before sending
+9. **Store your token** - Don't hardcode in scripts
+10. **Check response status** - 200/201 = success
 
 ## Next Steps
 
-1. Start the CMS server
-2. Try reading existing data with GET requests
-3. Create a test entry
-4. Update the test entry
-5. Delete the test entry
-6. Create real content
+1. Log in via `/api/users/login`
+2. Get your token
+3. Try reading data with GET
+4. Create a test entry
+5. Update the test entry
+6. Delete the test entry
+7. Build your automation scripts
 
 ## Getting Help
 
-- Check Payload REST API docs: https://payloadcms.com/docs/rest-api/overview
-- Review existing data structure via GET requests
-- Ask in GitHub Discussions
-- Open an issue for bugs
-
-## Future Enhancements
-
-- [ ] Postman collection with all endpoints
-- [ ] Example scripts for bulk operations
-- [ ] Validation helpers
-- [ ] Migration tools
-- [ ] Admin UI when Payload/Next.js compatibility is resolved
+- Payload REST API Docs: https://payloadcms.com/docs/rest-api/overview
+- Admin Panel Guide: [ADMIN_GUIDE.md](./ADMIN_GUIDE.md)
+- Admin Documentation: [PAYLOAD_ADMIN.md](./PAYLOAD_ADMIN.md)
+- GitHub Issues: Report problems
 
 ---
 
-Happy editing! 🚀
+Happy automating! 🚀

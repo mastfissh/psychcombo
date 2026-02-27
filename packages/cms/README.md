@@ -1,139 +1,63 @@
 # PsychCombo CMS
 
-This package contains the Payload CMS implementation for managing PsychCombo content.
+Content Management System for PsychCombo using Payload CMS with SQLite.
 
-## Setup
-
-1. Install dependencies (from root):
-   ```bash
-   npm install
-   ```
-
-2. Copy environment file:
-   ```bash
-   cd packages/cms
-   cp .env.example .env
-   ```
-
-3. Update `.env` with your configuration (especially `PAYLOAD_SECRET`)
-
-## Development
-
-Start the CMS development server:
+## Quick Start
 
 ```bash
+# Install dependencies (from repository root)
+npm install
+
+# Start the CMS
 npm run dev --workspace cms
 ```
 
-**Access Points:**
-- **REST API**: http://localhost:3000/api
-- **Health Check**: http://localhost:3000/health
-- **Admin Interface**: http://localhost:3000 (browse-only)
+**Access the admin panel at:** http://localhost:3000/admin
 
-## Content Editing
+On first visit, you'll create your first admin user.
 
-The CMS provides a full REST API for editing content. Due to technical limitations with Payload 3 + SQLite + Next.js Turbopack, the built-in admin UI is not currently available in development mode.
+## Admin Panel
 
-**👉 See [EDITING_OPTIONS.md](./EDITING_OPTIONS.md)** for complete explanation and solutions.
+The Payload CMS admin panel provides a full-featured interface for managing content:
 
-**👉 See [API_EDITING_GUIDE.md](./API_EDITING_GUIDE.md)** for detailed API editing instructions.
+- ✅ User authentication and management
+- ✅ Rich content editing for Psychoactives, Combos, and Risks
+- ✅ Media management
+- ✅ Search and filtering
+- ✅ Version history
+- ✅ Access control
 
-### Quick Start: Editing with API Tools
+**See [PAYLOAD_ADMIN.md](./PAYLOAD_ADMIN.md) for complete admin documentation.**
 
-1. **Install Postman** (recommended): https://www.postman.com/downloads/
-2. **Start CMS**: `npm run dev --workspace cms`
-3. **Test connection**: `GET http://localhost:3000/health`
-4. **Create/Edit content**: See [API_EDITING_GUIDE.md](./API_EDITING_GUIDE.md)
+## REST API
 
-### Why API-Based Editing?
-
-Payload CMS 3 requires Next.js for its admin panel, but there's a compatibility issue between:
-- Next.js 16 Turbopack (default bundler)
-- SQLite database adapters
-- Development mode
-
-This causes 500 errors when loading the admin panel. The REST API works perfectly and provides full CRUD capabilities. Professional API tools like Postman offer an excellent editing experience.
-
-**Alternative solutions**: Switch to PostgreSQL, use Payload 2.x, or wait for compatibility fixes. See [EDITING_OPTIONS.md](./EDITING_OPTIONS.md) for details.
-
-## Database
-
-This CMS uses SQLite for data storage. The database file is created at `data.db` in the cms package directory.
-
-## Collections
-
-### Psychoactives
-Individual psychoactive substances with:
-- Basic info (title, aliases, family members)
-- Duration chart (onset, plateau, etc.)
-- Effects (positive, negative, neutral)
-- Dosage table
-- Images and warnings
-
-### Combos
-Drug combination information:
-- Title
-- Drug 1 and Drug 2 identifiers
-- Rich text content (reports, research)
-
-### Risks
-Risk ratings for drug combinations:
-- Drug pairs
-- Risk level (SR, GR, MR, LRS, LRD, LR, ND)
-- Confidence level (HC, MC, LC, NC)
-
-## Migration
-
-To migrate existing content from MDX files:
-
-```bash
-npm run migrate --workspace cms
-```
-
-## Production Build
-
-```bash
-npm run build --workspace cms
-npm run start --workspace cms
-```
-
-## API Access
-
-The CMS provides a REST API for content access:
+The CMS also provides a REST API for programmatic access:
 
 ### Endpoints
 
-#### Psychoactives
+**Psychoactives:**
+- `GET /api/psychoactives` - List all
+- `GET /api/psychoactives/:slug` - Get by slug
+- `POST /api/psychoactives` - Create new
+- `PATCH /api/psychoactives/:id` - Update
+- `DELETE /api/psychoactives/:id` - Delete
 
-- **GET /api/psychoactives** - List all psychoactives
-  - Query params: `limit` (default: 100), `page` (default: 1), `where` (JSON filter)
-  - Example: `GET /api/psychoactives?limit=10&page=1`
+**Combos:**
+- `GET /api/combos` - List all
+- `GET /api/combos/:slug` - Get by slug
+- `POST /api/combos` - Create new
+- `PATCH /api/combos/:id` - Update
+- `DELETE /api/combos/:id` - Delete
 
-- **GET /api/psychoactives/:slug** - Get single psychoactive by slug
-  - Example: `GET /api/psychoactives/lsd`
+**Risks:**
+- `GET /api/risks` - List all
+- `GET /api/risks/:drug1/:drug2` - Get specific risk
+- `POST /api/risks` - Create new
+- `PATCH /api/risks/:id` - Update
+- `DELETE /api/risks/:id` - Delete
 
-#### Combos
-
-- **GET /api/combos** - List all combos
-  - Query params: `limit` (default: 100), `page` (default: 1), `where` (JSON filter)
-  - Example: `GET /api/combos?limit=50`
-
-- **GET /api/combos/:slug** - Get single combo by slug
-  - Example: `GET /api/combos/lsd_mdma`
-
-#### Risks
-
-- **GET /api/risks** - List all risks
-  - Query params: `limit` (default: 1000), `page` (default: 1), `where` (JSON filter)
-
-- **GET /api/risks/:drug1/:drug2** - Get risk data for specific drug combination
-  - Example: `GET /api/risks/lsd/mdma`
-  - Note: Drug order doesn't matter (automatically sorted)
-
-#### Health Check
-
-- **GET /health** - API health check
-  - Returns: `{"status": "ok", "message": "Payload CMS API is running"}`
+**Health Check:**
+- `GET /health` - API status
 
 ### Example Usage
 
@@ -144,15 +68,42 @@ curl http://localhost:3000/api/psychoactives
 # Get LSD information
 curl http://localhost:3000/api/psychoactives/lsd
 
-# Get LSD + MDMA combo information
+# Get LSD + MDMA combo
 curl http://localhost:3000/api/combos/lsd_mdma
 
-# Get risk data for LSD + MDMA
+# Get risk for LSD + MDMA
 curl http://localhost:3000/api/risks/lsd/mdma
-
-# Check API health
-curl http://localhost:3000/health
 ```
+
+**See [API_EDITING_GUIDE.md](./API_EDITING_GUIDE.md) for complete API documentation.**
+
+## Database
+
+Uses SQLite with the database stored in `data.db`. The database is automatically created on first run.
+
+### Migrations
+
+```bash
+# Create a new migration
+npm run payload migrate:create <name> --workspace cms
+
+# Run pending migrations
+npm run payload migrate --workspace cms
+```
+
+## Collections
+
+### Psychoactives
+Individual substances with info on duration, effects, dosage, warnings, etc.
+
+### Combos
+Drug combination information with rich text content.
+
+### Risks
+Risk ratings for drug combinations with confidence levels.
+
+### Users
+Admin users with authentication.
 
 ## Data Schema
 
@@ -162,8 +113,8 @@ curl http://localhost:3000/health
 {
   title: string
   slug: string
-  aka?: string[]  // Aliases
-  family_members?: string[]
+  aka?: Array<{alias: string}>
+  family_members?: string
   image_caption?: string
   image_location?: string
   duration_chart?: {
@@ -178,7 +129,6 @@ curl http://localhost:3000/health
   negative_effects?: string
   neutral_effects?: string
   dosage_table?: {
-    title?: string
     threshold?: string
     light?: string
     common?: string
@@ -186,7 +136,7 @@ curl http://localhost:3000/health
     heavy?: string
   }
   warnings?: string
-  content?: RichText  // Lexical editor format
+  content?: RichText
 }
 ```
 
@@ -198,7 +148,7 @@ curl http://localhost:3000/health
   slug: string
   drug1: string
   drug2: string
-  content: RichText  // Lexical editor format
+  content: RichText
 }
 ```
 
@@ -208,46 +158,54 @@ curl http://localhost:3000/health
 {
   drug1: string
   drug2: string
-  combo: string  // Auto-generated: "drug1_drug2" (sorted)
+  combo: string
   risk_level: 'SR' | 'GR' | 'MR' | 'LRS' | 'LRD' | 'LR' | 'ND'
   confidence?: 'HC' | 'MC' | 'LC' | 'NC'
 }
 ```
 
-### Risk Levels
+**Risk Levels:**
+- SR - Significant Risk
+- GR - Greater Risk  
+- MR - Minor Risk
+- LRS - Low Risk Synergy
+- LRD - Low Risk Decrease
+- LR - Low Risk
+- ND - No Data
 
-- **SR** - Significant Risk
-- **GR** - Greater Risk
-- **MR** - Minor Risk
-- **LRS** - Low Risk Synergy
-- **LRD** - Low Risk Decrease
-- **LR** - Low Risk
-- **ND** - No Data
+**Confidence Levels:**
+- HC - High Confidence
+- MC - Medium Confidence
+- LC - Low Confidence
+- NC - No Confidence
 
-### Confidence Levels
+## Environment Variables
 
-- **HC** - High Confidence
-- **MC** - Medium Confidence
-- **LC** - Low Confidence
-- **NC** - No Confidence
-
-## Deployment
-
-### Requirements
-
-- Node.js 18+
-- Environment variables configured
-- Persistent storage for SQLite database
-
-### Environment Variables
+Copy `.env.example` to `.env` and configure:
 
 ```bash
 PORT=3000
-PAYLOAD_PUBLIC_SERVER_URL=https://your-cms-url.com
+PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3000
 DATABASE_URL=file:./data.db
-PAYLOAD_SECRET=your-secret-key-change-this-in-production
-WEBSITE_URL=https://psychcombo.com
+PAYLOAD_SECRET=your-secret-key-here
+WEBSITE_URL=http://localhost:3333
 ```
+
+## Production
+
+```bash
+# Build
+npm run build --workspace cms
+
+# Start
+npm run start --workspace cms
+```
+
+### Deployment Requirements
+
+- Node.js 18+
+- Persistent storage for SQLite database
+- Environment variables configured
 
 ### Recommended Hosting
 
@@ -256,9 +214,14 @@ WEBSITE_URL=https://psychcombo.com
 - DigitalOcean App Platform
 - Any Node.js hosting with persistent storage
 
-### Database Persistence
+## Documentation
 
-The SQLite database file (`data.db`) must be persisted between deployments. Configure your hosting platform to:
-1. Mount a persistent volume for the database file
-2. Back up the database regularly
-3. Use read replicas if needed for high traffic
+- **[PAYLOAD_ADMIN.md](./PAYLOAD_ADMIN.md)** - Complete admin panel guide
+- **[API_EDITING_GUIDE.md](./API_EDITING_GUIDE.md)** - REST API documentation
+- **[ADMIN_GUIDE.md](./ADMIN_GUIDE.md)** - Admin usage guide
+
+## Getting Help
+
+- [Payload CMS Documentation](https://payloadcms.com/docs)
+- Open an issue on GitHub
+- Check existing issues and discussions
