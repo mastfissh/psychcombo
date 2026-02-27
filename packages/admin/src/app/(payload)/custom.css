@@ -1,0 +1,10 @@
+/* Custom styles for PayloadCMS admin panel */
+
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #1e40af;
+}
+
+.payload-admin {
+  font-family: system-ui, -apple-system, sans-serif;
+}
