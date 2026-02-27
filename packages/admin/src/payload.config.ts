@@ -11,6 +11,18 @@ import { Media } from './collections/Media'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Validate required environment variables
+if (!process.env.PAYLOAD_SECRET) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('PAYLOAD_SECRET environment variable is required in production')
+  }
+  console.warn('⚠️  PAYLOAD_SECRET not set. Using development default. DO NOT use in production!')
+}
+
+if (!process.env.DATABASE_URL) {
+  console.warn('⚠️  DATABASE_URL not set. Using default: file:./psychcombo.db')
+}
+
 export default buildConfig({
   admin: {
     user: 'users',
@@ -37,7 +49,7 @@ export default buildConfig({
     Media,
   ],
   editor: lexicalEditor({}),
-  secret: process.env.PAYLOAD_SECRET || 'your-secret-key-change-in-production',
+  secret: process.env.PAYLOAD_SECRET || 'dev-secret-change-in-production-12345',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

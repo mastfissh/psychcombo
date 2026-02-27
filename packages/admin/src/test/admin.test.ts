@@ -65,7 +65,8 @@ test('Admin panel starts and responds successfully', async (t) => {
       t.diagnostic(`Response includes CSS/stylesheet references: ${hasCSSReference}`)
       
     } catch (error) {
-      t.diagnostic(`Failed to fetch admin: ${error.message}`)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      t.diagnostic(`Failed to fetch admin: ${errorMessage}`)
     }
   }
 
