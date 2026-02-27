@@ -19,42 +19,42 @@ This package contains the Payload CMS implementation for managing PsychCombo con
 
 ## Development
 
-Start the CMS development server with admin interface:
+Start the CMS development server:
 
 ```bash
 npm run dev --workspace cms
 ```
 
 **Access Points:**
-- **Admin Panel**: http://localhost:3000/admin
 - **REST API**: http://localhost:3000/api
-- **GraphQL**: http://localhost:3000/graphql (if enabled)
+- **Health Check**: http://localhost:3000/health
+- **Admin Interface**: http://localhost:3000 (browse-only)
 
-### First Time Setup
+## Content Editing
 
-1. Navigate to http://localhost:3000/admin
-2. Create your first admin user:
-   - Email: your-email@example.com
-   - Password: (minimum 8 characters)
-   - Name: Your Name (optional)
-3. Click **Create** to access the admin panel
+The CMS provides a full REST API for editing content. Due to technical limitations with Payload 3 + SQLite + Next.js Turbopack, the built-in admin UI is not currently available in development mode.
 
-## Admin Interface
+**👉 See [EDITING_OPTIONS.md](./EDITING_OPTIONS.md)** for complete explanation and solutions.
 
-The admin interface provides a browser-based UI for viewing and browsing content. See [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) for detailed instructions.
+**👉 See [API_EDITING_GUIDE.md](./API_EDITING_GUIDE.md)** for detailed API editing instructions.
 
-**Quick Access:**
-- **Admin UI**: http://localhost:3000/admin (browse content)
-- **API Docs**: http://localhost:3000/admin (see API Documentation tab)
+### Quick Start: Editing with API Tools
 
-### Features:
-- Browse all psychoactives, combos, and risks
-- Search and filter content
-- View statistics (total counts)
-- Access raw JSON data
-- API endpoint reference
+1. **Install Postman** (recommended): https://www.postman.com/downloads/
+2. **Start CMS**: `npm run dev --workspace cms`
+3. **Test connection**: `GET http://localhost:3000/health`
+4. **Create/Edit content**: See [API_EDITING_GUIDE.md](./API_EDITING_GUIDE.md)
 
-**Note:** The admin interface is currently read-only for browsing. To create, update, or delete content, use the REST API directly with tools like Postman, curl, or HTTPie. See [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) for details.
+### Why API-Based Editing?
+
+Payload CMS 3 requires Next.js for its admin panel, but there's a compatibility issue between:
+- Next.js 16 Turbopack (default bundler)
+- SQLite database adapters
+- Development mode
+
+This causes 500 errors when loading the admin panel. The REST API works perfectly and provides full CRUD capabilities. Professional API tools like Postman offer an excellent editing experience.
+
+**Alternative solutions**: Switch to PostgreSQL, use Payload 2.x, or wait for compatibility fixes. See [EDITING_OPTIONS.md](./EDITING_OPTIONS.md) for details.
 
 ## Database
 
