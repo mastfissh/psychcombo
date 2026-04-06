@@ -65,7 +65,9 @@ const App = () => {
   if (!isLoading) {
     psych1 = idx[psych1_slug];
     psych2 = idx[psych2_slug];
-    const combo_data = comboIdx[`${psych1_slug}_${psych2_slug}`];
+    const combo_data =
+      comboIdx[`${psych1_slug}_${psych2_slug}`] ??
+      comboIdx[`${psych2_slug}_${psych1_slug}`];
     conf = confidence([psych1_slug, psych2_slug], data);
     rsk = risk([psych1_slug, psych2_slug], data);
     if (combo_data) {
