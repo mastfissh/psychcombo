@@ -1,6 +1,8 @@
 import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
 const psychoactivesCollection = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/psychoactives" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     image_caption: z.string().optional(),
@@ -31,6 +33,7 @@ const psychoactivesCollection = defineCollection({
 });
 
 const combosCollection = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/combos" }),
   schema: () => z.object({
     title: z.string(),
   })

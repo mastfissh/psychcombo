@@ -1,7 +1,6 @@
 ---
 const { title, data } = Astro.props;
-import crypto from "crypto";
-let id = crypto.randomBytes(20).toString("hex");
+let id = Math.random().toString(36).slice(2);
 declare global {
   interface Window {
     drawChart: any;

@@ -1,11 +1,12 @@
 import risks from "@public/risks.json";
 import { getCollection } from "astro:content";
-import { createHash } from "crypto";
 
-function hashObject(obj:object): string {
-  const hash = createHash("md5");
-  hash.update(JSON.stringify(obj));
-  return hash.digest("hex");
+async function hashObject(obj: object): Promise<string> {
+  const data = new TextEncoder().encode(JSON.stringify(obj));
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export async function GET({}) {
@@ -13,9 +14,9 @@ export async function GET({}) {
   const combos = await getCollection("combos");
   return new Response(
     JSON.stringify({
-      risks: hashObject(risks),
-      psychoactives: hashObject(psychoactives),
-      combos: hashObject(combos),
+      risks: await hashObject(risks),
+      psychoactives: await hashObject(psychoactives),
+      combos: await hashObject(combos),
     })
   );
 }
