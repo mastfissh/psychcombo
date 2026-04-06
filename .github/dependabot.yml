@@ -7,6 +7,7 @@ updates:
       interval: "daily"
     cooldown:
       default-days: 10
+    open-pull-requests-limit: 0
   
   # Mobile package
   - package-ecosystem: "npm"
@@ -15,6 +16,7 @@ updates:
       interval: "daily"
     cooldown:
       default-days: 10
+    open-pull-requests-limit: 0
   
   # Website package
   - package-ecosystem: "npm"
@@ -23,6 +25,7 @@ updates:
       interval: "daily"
     cooldown:
       default-days: 10
+    open-pull-requests-limit: 0
   
   # Shared package
   - package-ecosystem: "npm"
@@ -31,3 +34,4 @@ updates:
       interval: "daily"
     cooldown:
       default-days: 10
+    open-pull-requests-limit: 0
