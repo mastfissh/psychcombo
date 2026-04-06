@@ -16,8 +16,8 @@
     "gen": "npx tsx ./src/genimg.ts"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/cloudflare": "^12.6.9",
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/cloudflare": "^12.6.13",
     "@astrojs/mdx": "^4.3.5",
     "@astrojs/preact": "^4.1.1",
     "@astrojs/sitemap": "^3.6.0",
