@@ -1,0 +1,5 @@
+# Exclude other monorepo packages from EAS builds
+# (shared is a local dep and gets resolved via node_modules symlink)
+../../packages/website
+../../.github
+../../*.md

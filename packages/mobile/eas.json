@@ -7,11 +7,17 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development"
+      "channel": "development",
+      "android": {
+        "buildType": "apk"
+      }
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "channel": "preview",
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
       "autoIncrement": true,
@@ -25,10 +31,10 @@
         "changesNotSentForReview": true
       },
       "ios": {
-      "appleId": "mastfish@gmail.com",
-      "ascAppId": "6741306670",
-      "appleTeamId": "M8VYF5C359"
-    }
+        "appleId": "mastfish@gmail.com",
+        "ascAppId": "6741306670",
+        "appleTeamId": "M8VYF5C359"
+      }
     }
   }
 }
