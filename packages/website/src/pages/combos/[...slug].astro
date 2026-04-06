@@ -29,7 +29,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { slug } = Astro.params;
-let Content = Fallback;
+let Content = Fallback as unknown as Awaited<ReturnType<typeof render>>["Content"];
 let editAction = "create";
 if (entry) {
   Content = (await render(entry)).Content;
