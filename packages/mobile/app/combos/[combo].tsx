@@ -21,30 +21,32 @@ const App = () => {
   }, [navigation]);
   const [idx, setIdx] = useState<{ [key: string]: any }>({});
   const [comboIdx, setComboIdx] = useState<{ [key: string]: any }>({});
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
-        const psychs = await cachedPsychs();
-        let idx = {} as any;
-        for (let sub of psychs) {
+        const [psychs, combos, data] = await Promise.all([
+          cachedPsychs(),
+          cachedCombos(),
+          cachedRisks(),
+        ]);
+        const idx: { [key: string]: any } = {};
+        for (const sub of psychs) {
           idx[sub["slug"]] = sub;
         }
         setIdx(idx);
 
-        const combos = await cachedCombos();
-        let combo_idx = {} as any;
-        for (let sub of combos) {
+        const combo_idx: { [key: string]: any } = {};
+        for (const sub of combos) {
           combo_idx[sub["slug"]] = sub;
         }
         setComboIdx(combo_idx);
-        const data = await cachedRisks();
         setData(data);
         setIsLoading(false);
       } catch (error) {
-        console.debug("Error fetching data:", error);
+        console.error("Error fetching data:", error);
         setError(error);
         setIsLoading(false);
       }

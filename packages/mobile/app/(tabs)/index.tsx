@@ -7,7 +7,7 @@ import {
   gridState,
   saveGridState,
 } from "@/lib/fetchData";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   Pressable,
@@ -19,39 +19,37 @@ import {
 
 const App = () => {
   const [mainlist, setMainlist] = useState<any[]>([]);
-  const [risks, setRisks] = useState<any[]>([]);
+  const [risks, setRisks] = useState<any>(null);
   const [psychs, setPsychs] = useState<{ [key: string]: any }>({});
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentState, setState] = useState<{
     checked_boxes: { [key: string]: boolean };
   }>({ checked_boxes: {} });
+
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
-        const psychs = await cachedPsychs();
-        let idx = {} as any;
-        for (let sub of psychs) {
+        const [psychs, risks, preselected] = await Promise.all([
+          cachedPsychs(),
+          cachedRisks(),
+          gridState(),
+        ]);
+        const idx: { [key: string]: any } = {};
+        const mainlist: string[] = [];
+        const list: { [key: string]: boolean } = {};
+        for (const sub of psychs) {
           idx[sub["slug"]] = sub;
-        }
-        const risks = await cachedRisks();
-        const preselected = await gridState();
-        const list: any = {};
-        const mainlist: any[] = [];
-        for (let sub of psychs) {
-          list[sub["slug"]] = preselected.includes(sub["slug"]);
           mainlist.push(sub["slug"]);
+          list[sub["slug"]] = preselected.includes(sub["slug"]);
         }
-        const state = {
-          checked_boxes: list,
-        };
         setRisks(risks);
-        setState(state);
+        setState({ checked_boxes: list });
         setPsychs(idx);
         setMainlist(mainlist);
         setIsLoading(false);
       } catch (error) {
-        console.debug("Error fetching data:", error);
+        console.error("Error fetching data:", error);
         setIsLoading(false);
       }
     };
@@ -70,11 +68,12 @@ const App = () => {
       },
     }));
   };
+
   useEffect(() => {
     if (isLoading) {
       return;
     }
-    const saved = [];
+    const saved: string[] = [];
     for (const [key, val] of Object.entries(currentState.checked_boxes)) {
       if (val) {
         saved.push(key);
@@ -82,18 +81,22 @@ const App = () => {
     }
     saveGridState(saved);
   }, [currentState, isLoading]);
-  const chart = [""];
-  for (const [key, val] of Object.entries(currentState.checked_boxes)) {
-    if (val) {
-      chart.push(key);
+
+  const { chart, grid } = useMemo(() => {
+    const chart = [""];
+    for (const [key, val] of Object.entries(currentState.checked_boxes)) {
+      if (val) {
+        chart.push(key);
+      }
     }
-  }
-  const grid = [];
-  for (const subcol of chart) {
-    for (const subrow of chart) {
-      grid.push([subcol, subrow]);
+    const grid: string[][] = [];
+    for (const subcol of chart) {
+      for (const subrow of chart) {
+        grid.push([subcol, subrow]);
+      }
     }
-  }
+    return { chart, grid };
+  }, [currentState.checked_boxes]);
 
   return (
     <Fragment>

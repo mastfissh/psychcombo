@@ -2,7 +2,7 @@ import Disclaimer from "@/components/Disclaimer";
 import { cachedPsychs } from "@/lib/fetchData";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, SectionList,Image, Text, View } from "react-native";
 
 const App = () => {
@@ -21,7 +21,7 @@ const App = () => {
         setData(psychs);
         setIsLoading(false);
       } catch (error) {
-        console.debug("Error fetching data:", error);
+        console.error("Error fetching data:", error);
         setIsLoading(false);
         setError(error);
       }
@@ -31,14 +31,15 @@ const App = () => {
   }, []);
 
   const { slug }: { slug: string } = useLocalSearchParams();
-  let entry = {} as any;
-  if (!isLoading) {
-    let idx = {} as any;
-    for (let sub of data) {
+
+  const entry = useMemo(() => {
+    if (isLoading) return null;
+    const idx: { [key: string]: any } = {};
+    for (const sub of data) {
       idx[sub["slug"]] = sub;
     }
-    entry = idx[slug];
-  }
+    return idx[slug] ?? null;
+  }, [data, isLoading, slug]);
 
   if (isLoading) {
     return (

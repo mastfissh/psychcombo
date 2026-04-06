@@ -10,9 +10,8 @@ interface GridCellProps {
   isLoading: boolean;
 }
 
-const GridCell = ({ item, psychs, risks, isLoading }: GridCellProps) => {
-  item.sort();
-  const [x, y] = item;
+const GridCell = React.memo(function GridCell({ item, psychs, risks, isLoading }: GridCellProps) {
+  const [x, y] = [...item].sort();
 
   if (x === "" || x === y) {
     return (
@@ -45,6 +44,6 @@ const GridCell = ({ item, psychs, risks, isLoading }: GridCellProps) => {
       </Link>
     </View>
   );
-};
+});
 
 export default GridCell;

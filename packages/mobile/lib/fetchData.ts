@@ -12,41 +12,44 @@ function versioned(key: string): string {
   return `${key}_${versionId}_${month}_hash`;
 }
 
-async function getHash(): Promise<any> {
+async function getHash(): Promise<Record<string, string>> {
   const response = await fetch(`${API_BASE_URL}/hash.json`);
   return response.json();
 }
 
-async function fetchAndCache(url: string, key: string): Promise<string> {
-  const hash = await getHash();
-  const savedHash = await AsyncStorage.getItem(versioned(key));
-  const cachedData = await AsyncStorage.getItem(key);
+async function fetchAndCache(url: string, key: string): Promise<void> {
+  try {
+    const hash = await getHash();
+    const savedHash = await AsyncStorage.getItem(versioned(key));
+    const cached = await AsyncStorage.getItem(key);
 
-  if (savedHash === hash[key] && cachedData) {
-    return cachedData;
+    if (savedHash === hash[key] && cached) {
+      return;
+    }
+
+    const response = await fetch(url);
+    const data = await response.text();
+    await AsyncStorage.setItem(key, data);
+    await AsyncStorage.setItem(versioned(key), hash[key]);
+  } catch {
+    // Background refresh failure is non-fatal; cached/fallback data will be used
   }
-
-  const response = await fetch(url);
-  const data = await response.text();
-  await AsyncStorage.setItem(key, data);
-  await AsyncStorage.setItem(versioned(key), hash[key]);
-  return data;
 }
 
 async function fetchFromCache(key: string, fallback: string): Promise<string> {
   return (await AsyncStorage.getItem(key)) || fallback;
 }
 
-async function cachedData(
+async function cachedData<T>(
   endpoint: string,
   key: string,
-  fallbackData: any
-): Promise<any> {
+  fallbackData: T
+): Promise<T> {
   const API_URL = `${API_BASE_URL}/${endpoint}.json`;
-  fetchAndCache(API_URL, key);
-  const fallback = fetchFromCache(key, JSON.stringify(fallbackData));
-  const result = await fallback;
-  return JSON.parse(result);
+  // Fire-and-forget background refresh; result is served from cache/fallback
+  void fetchAndCache(API_URL, key);
+  const result = await fetchFromCache(key, JSON.stringify(fallbackData));
+  return JSON.parse(result) as T;
 }
 
 export const cachedPsychs = () =>
@@ -55,13 +58,14 @@ export const cachedRisks = () => cachedData("risks", "risks", risksFallback);
 export const cachedCombos = () =>
   cachedData("combos", "combos", combosFallback);
 
-export async function gridState(): Promise<any> {
-  return fetchFromCache(
+export async function gridState(): Promise<string[]> {
+  const raw = await fetchFromCache(
     "chosenPsychs",
     JSON.stringify(["alcohol", "cannabis-species", "cocaine", "ketamine"])
   );
+  return JSON.parse(raw) as string[];
 }
 
-export async function saveGridState(state: any): Promise<void> {
-  return AsyncStorage.setItem("chosenPsychs", JSON.stringify(state));
+export async function saveGridState(state: string[]): Promise<void> {
+  await AsyncStorage.setItem("chosenPsychs", JSON.stringify(state));
 }

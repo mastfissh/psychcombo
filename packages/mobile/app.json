@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/splash_icon.png",
-    "scheme": "myapp",
+    "scheme": "psychcombo",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {

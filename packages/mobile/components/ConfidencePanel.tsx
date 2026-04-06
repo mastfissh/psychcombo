@@ -1,9 +1,6 @@
-import { Link } from "expo-router";
-import { type ComponentProps } from "react";
 import { Text } from "react-native";
 
-let explainer: { [index: string]: any } = {};
-explainer = {
+const explainer: Record<string, string> = {
   "Low confidence":
     "Low confidence: This risk rating could be wrong, we don't know much about this combination.",
   "Medium confidence":
@@ -12,7 +9,7 @@ explainer = {
     "High confidence: There is good evidence to support the risk rating of this combination.",
 };
 
-type Props = Omit<ComponentProps<typeof Link>, "href"> & { conf: string };
+type Props = { conf: string };
 
 export function ConfidencePanel({ conf }: Props) {
   const out = explainer[conf];
