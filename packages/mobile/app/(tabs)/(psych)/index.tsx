@@ -20,7 +20,9 @@ const preprocess = (data: any, data2: any) => {
   let substances = [];
   for (let drug of data2["drugs"]) {
     let item = idx[linkify(drug)];
-    substances.push(item);
+    if (item !== undefined) {
+      substances.push(item);
+    }
   }
   return substances;
 };
@@ -102,6 +104,7 @@ const App = () => {
           </Link>
         )}
         numColumns={numColumns}
+        keyExtractor={(item) => item.slug}
       />
     </View>
   );
