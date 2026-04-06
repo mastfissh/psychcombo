@@ -56,7 +56,7 @@ Press `a` to open in an Android emulator, or scan the QR code with the **Expo Go
 5. Verify the device is visible:
    ```bash
    adb devices
-   # Should show something like: emulator-5554  device
+   # Should show something like: 1A2B3C4D5E6F7G8H  device
    ```
 
 ### 2 — Build and run with `expo run:android`
