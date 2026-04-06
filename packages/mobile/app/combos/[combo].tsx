@@ -68,15 +68,13 @@ const App = () => {
     const combo_data = comboIdx[`${psych1_slug}_${psych2_slug}`];
     conf = confidence([psych1_slug, psych2_slug], data);
     rsk = risk([psych1_slug, psych2_slug], data);
-    if (combo_data) {
-      let md = combo_data.body
-        .replaceAll("import Chart from '../../components/chart.astro';", " \n ")
-        .replaceAll(
-          "<Chart title={frontmatter.duration_chart_title} data={frontmatter.duration_chart} />",
-          " \n "
-        );
-      str = `${md}`;
-    }
+    let md = combo_data.body
+      .replaceAll("import Chart from '../../components/chart.astro';", " \n ")
+      .replaceAll(
+        "<Chart title={frontmatter.duration_chart_title} data={frontmatter.duration_chart} />",
+        " \n "
+      );
+    str = `${md}`;
   }
   if (isLoading) {
     return (
@@ -90,14 +88,6 @@ const App = () => {
     return (
       <View>
         <Text>Error!: {error}</Text>
-      </View>
-    );
-  }
-
-  if (!psych1 || !psych2) {
-    return (
-      <View>
-        <Text>Psychoactive not found.</Text>
       </View>
     );
   }
