@@ -19,7 +19,7 @@
     "@astrojs/check": "^0.9.8",
     "@astrojs/cloudflare": "^12.6.13",
     "@astrojs/mdx": "^4.3.5",
-    "@astrojs/preact": "^4.1.1",
+    "@astrojs/preact": "^5.1.0",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/ts-plugin": "^1.10.4",
     "@tailwindcss/vite": "^4.1.13",
