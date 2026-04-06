@@ -2,17 +2,17 @@ import { risk, risk_to_bg } from "shared";
 import { Link } from "expo-router";
 import React from "react";
 import { View } from "react-native";
+import { type PsychEntry } from "@/lib/types";
 
 interface GridCellProps {
   item: string[];
-  psychs: { [key: string]: any };
-  risks: any[];
+  psychs: Record<string, PsychEntry>;
+  risks: any;
   isLoading: boolean;
 }
 
-const GridCell = ({ item, psychs, risks, isLoading }: GridCellProps) => {
-  item.sort();
-  const [x, y] = item;
+const GridCell = React.memo(function GridCell({ item, psychs, risks, isLoading }: GridCellProps) {
+  const [x, y] = [...item].sort();
 
   if (x === "" || x === y) {
     return (
@@ -45,6 +45,6 @@ const GridCell = ({ item, psychs, risks, isLoading }: GridCellProps) => {
       </Link>
     </View>
   );
-};
+});
 
 export default GridCell;

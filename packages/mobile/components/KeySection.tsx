@@ -4,7 +4,7 @@ import { Text, View } from "react-native";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-const KeySection = () => {
+const KeySection = React.memo(function KeySection() {
   return (
     <Fragment>
       <Text className="text-xl font-bold">Key</Text>
@@ -86,6 +86,6 @@ const KeySection = () => {
       </View>
     </Fragment>
   );
-};
+});
 
 export default KeySection;

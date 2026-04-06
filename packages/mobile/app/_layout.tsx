@@ -15,7 +15,7 @@ async function unlockOrientationForTablets() {
 }
 
 export default function Layout() {
-  const headerShown = Platform.OS === "android" ? false : true;
+  const headerShown = Platform.OS !== "android";
   useEffect(() => {
     unlockOrientationForTablets();
   }, []);

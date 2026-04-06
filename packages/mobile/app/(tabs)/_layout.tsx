@@ -4,7 +4,7 @@ import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 
 export default function TabLayout() {
-  const headerShown = Platform.OS === "android" ? false : true;
+  const headerShown = Platform.OS !== "android";
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "blue" }}>
       <Tabs.Screen

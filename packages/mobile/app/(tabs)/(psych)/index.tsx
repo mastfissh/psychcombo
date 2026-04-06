@@ -30,16 +30,16 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [numColumns, setNumColumns] = useState(3);
   const [error, setError] = useState<any>(null);
+
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
-        const psychs = await cachedPsychs();
-        const risks = await cachedRisks();
+        const [psychs, risks] = await Promise.all([cachedPsychs(), cachedRisks()]);
         const substances = preprocess(psychs, risks);
         setData(substances);
         setIsLoading(false);
       } catch (error) {
-        console.debug("Error fetching data:", error);
+        console.error("Error fetching data:", error);
         setIsLoading(false);
         setError(error);
       }
@@ -47,25 +47,27 @@ const App = () => {
 
     fetchAndSetData();
   }, []);
+
   useEffect(() => {
-    doOrientationLogic();
-  }, []);
-  useEffect(() => {
-    ScreenOrientation.addOrientationChangeListener(
-      doOrientationLogic
-    );
+    const updateColumns = async () => {
+      const orientation = await ScreenOrientation.getOrientationAsync();
+      if (
+        orientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
+        orientation === ScreenOrientation.Orientation.PORTRAIT_DOWN
+      ) {
+        setNumColumns(3);
+      } else {
+        setNumColumns(6);
+      }
+    };
+
+    updateColumns();
+    const subscription = ScreenOrientation.addOrientationChangeListener(updateColumns);
     return () => {
-      ScreenOrientation.removeOrientationChangeListeners();
+      subscription.remove();
     };
   }, []);
-  const doOrientationLogic = async () => {
-    const orientation = await ScreenOrientation.getOrientationAsync();
-    if (orientation === ScreenOrientation.Orientation.PORTRAIT_UP || orientation === ScreenOrientation.Orientation.PORTRAIT_DOWN) {
-      setNumColumns(3);
-    } else {
-      setNumColumns(6);
-    }
-  };
+
   if (isLoading) {
     return (
       <View>

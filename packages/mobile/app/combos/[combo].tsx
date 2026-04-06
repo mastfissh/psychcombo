@@ -3,6 +3,7 @@ import Disclaimer from "@/components/Disclaimer";
 import MarkdownList from "@/components/MarkDownList";
 import { RiskPanel } from "@/components/RiskPanel";
 import { cachedCombos, cachedPsychs, cachedRisks } from "@/lib/fetchData";
+import { type ComboEntry, type PsychEntry } from "@/lib/types";
 import { confidence, risk } from "shared";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -19,32 +20,34 @@ const App = () => {
   useEffect(() => {
     navigation.setOptions({ title: "Details" });
   }, [navigation]);
-  const [idx, setIdx] = useState<{ [key: string]: any }>({});
-  const [comboIdx, setComboIdx] = useState<{ [key: string]: any }>({});
-  const [data, setData] = useState<any[]>([]);
+  const [idx, setIdx] = useState<Record<string, PsychEntry>>({});
+  const [comboIdx, setComboIdx] = useState<Record<string, ComboEntry>>({});
+  const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
-        const psychs = await cachedPsychs();
-        let idx = {} as any;
-        for (let sub of psychs) {
-          idx[sub["slug"]] = sub;
+        const [psychs, combos, data] = await Promise.all([
+          cachedPsychs(),
+          cachedCombos(),
+          cachedRisks(),
+        ]);
+        const idx: Record<string, PsychEntry> = {};
+        for (const sub of psychs) {
+          idx[sub.slug] = sub;
         }
         setIdx(idx);
 
-        const combos = await cachedCombos();
-        let combo_idx = {} as any;
-        for (let sub of combos) {
-          combo_idx[sub["slug"]] = sub;
+        const combo_idx: Record<string, ComboEntry> = {};
+        for (const sub of combos) {
+          combo_idx[sub.slug] = sub;
         }
         setComboIdx(combo_idx);
-        const data = await cachedRisks();
         setData(data);
         setIsLoading(false);
       } catch (error) {
-        console.debug("Error fetching data:", error);
+        console.error("Error fetching data:", error);
         setError(error);
         setIsLoading(false);
       }

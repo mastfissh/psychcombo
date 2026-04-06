@@ -1,8 +1,9 @@
 import Disclaimer from "@/components/Disclaimer";
 import { cachedPsychs } from "@/lib/fetchData";
+import { type PsychEntry } from "@/lib/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, SectionList,Image, Text, View } from "react-native";
 
 const App = () => {
@@ -11,7 +12,7 @@ const App = () => {
   useEffect(() => {
     navigation.setOptions({ title: "Details" });
   }, [navigation]);
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<PsychEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   useEffect(() => {
@@ -21,7 +22,7 @@ const App = () => {
         setData(psychs);
         setIsLoading(false);
       } catch (error) {
-        console.debug("Error fetching data:", error);
+        console.error("Error fetching data:", error);
         setIsLoading(false);
         setError(error);
       }
@@ -31,14 +32,15 @@ const App = () => {
   }, []);
 
   const { slug }: { slug: string } = useLocalSearchParams();
-  let entry = {} as any;
-  if (!isLoading) {
-    let idx = {} as any;
-    for (let sub of data) {
-      idx[sub["slug"]] = sub;
+
+  const entry = useMemo((): PsychEntry | null => {
+    if (isLoading) return null;
+    const idx: Record<string, PsychEntry> = {};
+    for (const sub of data) {
+      idx[sub.slug] = sub;
     }
-    entry = idx[slug];
-  }
+    return idx[slug] ?? null;
+  }, [data, isLoading, slug]);
 
   if (isLoading) {
     return (
@@ -55,6 +57,15 @@ const App = () => {
       </View>
     );
   }
+
+  if (!entry) {
+    return (
+      <View>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <SectionList
       sections={[

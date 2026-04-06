@@ -1,11 +1,12 @@
 import React from "react";
 import { FlatList, Modal, Pressable, Text, View } from "react-native";
+import { type PsychEntry } from "@/lib/types";
 
 type ModalPickerProps = {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
   mainlist: string[];
-  psychs: { [key: string]: any };
+  psychs: Record<string, PsychEntry>;
   isChecked: (target: string) => boolean;
   toggle: (target: string) => void;
 };
