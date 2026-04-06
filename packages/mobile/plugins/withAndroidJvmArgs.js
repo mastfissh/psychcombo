@@ -5,8 +5,8 @@ const { withGradleProperties } = require('@expo/config-plugins');
  * Sets org.gradle.jvmargs in android/gradle.properties.
  */
 const withAndroidJvmArgs = (config) => {
-  return withGradleProperties(config, (config) => {
-    const properties = config.modResults;
+  return withGradleProperties(config, (gradleConfig) => {
+    const properties = gradleConfig.modResults;
 
     const jvmArgsIndex = properties.findIndex(
       (p) => p.type === 'property' && p.key === 'org.gradle.jvmargs'
@@ -20,7 +20,7 @@ const withAndroidJvmArgs = (config) => {
       properties.push({ type: 'property', key: 'org.gradle.jvmargs', value });
     }
 
-    return config;
+    return gradleConfig;
   });
 };
 
