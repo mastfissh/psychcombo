@@ -13,13 +13,13 @@ let preact_data = {};
 for (let sub of substances) {
   let item = {
     title: sub.data.title,
-    slug: sub.slug,
+    slug: sub.id,
     aka: sub.data.aka,
     fam: sub.data.family_members,
     img: sub.data.image_location,
     img_capt: sub.data.image_caption,
   };
-  preact_data[sub.slug] = item;
+  preact_data[sub.id] = item;
 }
 ---
 

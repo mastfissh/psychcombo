@@ -1,17 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
   const pages = await getCollection('psychoactives');
   return pages.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+    params: { slug: entry.id }, props: { entry },
   }));
 }
 // 2. When it's time to render, you can get the entry directly from the prop
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 import data from '@public/risks.json';
-let value = entry.slug
+let value = entry.id
 const substances = await getCollection('psychoactives');
 import BaseLayout from '@src/layouts/BaseLayout.astro';
 import EditPage from '@src/components/edit_page.astro';
@@ -83,7 +83,7 @@ if (entry.data.title.toLowerCase().endsWith('species')) {
    </table>
    <Content />
    <span class="print:break-after-page"></span>
-    <EditPage slug={entry.slug} type={"psychoactives"} />
+    <EditPage slug={entry.id} type={"psychoactives"} />
   </article>
 
   <span class="print:break-after-page"></span>
@@ -99,9 +99,9 @@ if (entry.data.title.toLowerCase().endsWith('species')) {
 <div class="container px-6 mx-auto">
   <span class="grid w-full gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
   {substances.map((substance) => (
-  (substance.slug != value) && <a href={`${import.meta.env.BASE_URL}combos/` + linkify(combo([substance.slug,value])) + '/'} class="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 h-auto">
+  (substance.id != value) && <a href={`${import.meta.env.BASE_URL}combos/` + linkify(combo([substance.id,value])) + '/'} class="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 h-auto">
       <div class="p-4 h-24">
-          <h3 class="p-1 text-2xl font-bold tracking-tight text-gray-600 rounded-lg" class:list={risk_to_bg(risk([entry.slug,substance.slug], data))} >{substance.data.title}</h3>
+          <h3 class="p-1 text-2xl font-bold tracking-tight text-gray-600 rounded-lg" class:list={risk_to_bg(risk([entry.id,substance.id], data))} >{substance.data.title}</h3>
       </div>
       <img
         class="h-auto max-w-full rounded-lg align-middle leading-none shadow-lg"

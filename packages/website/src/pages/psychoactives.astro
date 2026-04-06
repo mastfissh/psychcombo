@@ -8,7 +8,7 @@ const pageTitle = "Psychs";
 const unsorted_substances = await getCollection("psychoactives");
 let idx = {};
 for (let sub of unsorted_substances) {
-  idx[sub["slug"]] = sub;
+  idx[sub["id"]] = sub;
 }
 let substances = [];
 for (let drug of data["drugs"]) {
@@ -27,7 +27,7 @@ for (let drug of data["drugs"]) {
         substances.map((substance) => (
           <a
             href={
-              `${import.meta.env.BASE_URL}psychoactives/` + substance.slug + "/"
+              `${import.meta.env.BASE_URL}psychoactives/` + substance.id + "/"
             }
             class="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 h-auto"
           >
