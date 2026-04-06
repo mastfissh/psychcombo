@@ -29,10 +29,10 @@ for (let drug of data["drugs"]) {
             href={
               `${import.meta.env.BASE_URL}psychoactives/` + substance.slug + "/"
             }
-            class="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 h-auto"
+            class="bg-zinc-900 border border-gray-700 rounded-lg shadow hover:bg-zinc-800 h-auto transition-colors"
           >
             <div class="p-4 h-24">
-              <h3 class=" text-2xl font-bold tracking-tight text-gray-600">
+              <h3 class=" text-2xl font-bold tracking-tight text-white">
                 {substance.data.title}
               </h3>
             </div>

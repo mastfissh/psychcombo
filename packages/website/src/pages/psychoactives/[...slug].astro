@@ -28,7 +28,7 @@ if (entry.data.title.toLowerCase().endsWith('species')) {
 ---
 <BaseLayout pageTitle={entry.data.title} metaDescription={`Psychoactives information. This is the page for harm reduction to learn about safety risks for ${entry.data.title}, ${(entry.data.family_members||[]).concat(entry.data.aka||[]).join(', ')}`}>
 
-  <article class="prose lg:prose-xl mx-auto">
+  <article class="prose prose-invert lg:prose-xl mx-auto">
     <h2> {entry.data.title} </h2>
     <figure class="mb-1 max-w-2-xl relative ">
     <img
@@ -87,7 +87,7 @@ if (entry.data.title.toLowerCase().endsWith('species')) {
   </article>
 
   <span class="print:break-after-page"></span>
-<h2 class=" mx-auto text-xl  mb-4">Combined with: </h2>
+<h2 class="mx-auto text-xl mb-4 text-white">Combined with: </h2>
 <span class="grid grid-cols-2 lg:grid-cols-3 print:my-4">
     <span class:list={risk_to_bg('SR')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Significant Risk</span>
     <span class:list={risk_to_bg('GR')} class = "text-m font-medium m-2 px-2.5 py-0.5 rounded"> Greater Risk</span>
@@ -99,9 +99,9 @@ if (entry.data.title.toLowerCase().endsWith('species')) {
 <div class="container px-6 mx-auto">
   <span class="grid w-full gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
   {substances.map((substance) => (
-  (substance.slug != value) && <a href={`${import.meta.env.BASE_URL}combos/` + linkify(combo([substance.slug,value])) + '/'} class="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 h-auto">
+  (substance.slug != value) && <a href={`${import.meta.env.BASE_URL}combos/` + linkify(combo([substance.slug,value])) + '/'} class="bg-zinc-900 border border-gray-700 rounded-lg shadow hover:bg-zinc-800 h-auto transition-colors">
       <div class="p-4 h-24">
-          <h3 class="p-1 text-2xl font-bold tracking-tight text-gray-600 rounded-lg" class:list={risk_to_bg(risk([entry.slug,substance.slug], data))} >{substance.data.title}</h3>
+          <h3 class="p-1 text-2xl font-bold tracking-tight text-white rounded-lg" class:list={risk_to_bg(risk([entry.slug,substance.slug], data))} >{substance.data.title}</h3>
       </div>
       <img
         class="h-auto max-w-full rounded-lg align-middle leading-none shadow-lg"
