@@ -31,8 +31,9 @@ async function fetchAndCache(url: string, key: string): Promise<void> {
     const data = await response.text();
     await AsyncStorage.setItem(key, data);
     await AsyncStorage.setItem(versioned(key), hash[key]);
-  } catch {
+  } catch (error) {
     // Background refresh failure is non-fatal; cached/fallback data will be used
+    console.warn("Background data refresh failed:", error);
   }
 }
 
