@@ -2,11 +2,12 @@ import { risk, risk_to_bg } from "shared";
 import { Link } from "expo-router";
 import React from "react";
 import { View } from "react-native";
+import { type PsychEntry } from "@/lib/types";
 
 interface GridCellProps {
   item: string[];
-  psychs: { [key: string]: any };
-  risks: any[];
+  psychs: Record<string, PsychEntry>;
+  risks: any;
   isLoading: boolean;
 }
 

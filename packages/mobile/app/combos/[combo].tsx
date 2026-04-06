@@ -3,6 +3,7 @@ import Disclaimer from "@/components/Disclaimer";
 import MarkdownList from "@/components/MarkDownList";
 import { RiskPanel } from "@/components/RiskPanel";
 import { cachedCombos, cachedPsychs, cachedRisks } from "@/lib/fetchData";
+import { type ComboEntry, type PsychEntry } from "@/lib/types";
 import { confidence, risk } from "shared";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -19,8 +20,8 @@ const App = () => {
   useEffect(() => {
     navigation.setOptions({ title: "Details" });
   }, [navigation]);
-  const [idx, setIdx] = useState<{ [key: string]: any }>({});
-  const [comboIdx, setComboIdx] = useState<{ [key: string]: any }>({});
+  const [idx, setIdx] = useState<Record<string, PsychEntry>>({});
+  const [comboIdx, setComboIdx] = useState<Record<string, ComboEntry>>({});
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
@@ -32,15 +33,15 @@ const App = () => {
           cachedCombos(),
           cachedRisks(),
         ]);
-        const idx: { [key: string]: any } = {};
+        const idx: Record<string, PsychEntry> = {};
         for (const sub of psychs) {
-          idx[sub["slug"]] = sub;
+          idx[sub.slug] = sub;
         }
         setIdx(idx);
 
-        const combo_idx: { [key: string]: any } = {};
+        const combo_idx: Record<string, ComboEntry> = {};
         for (const sub of combos) {
-          combo_idx[sub["slug"]] = sub;
+          combo_idx[sub.slug] = sub;
         }
         setComboIdx(combo_idx);
         setData(data);

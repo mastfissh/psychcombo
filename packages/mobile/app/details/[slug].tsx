@@ -1,5 +1,6 @@
 import Disclaimer from "@/components/Disclaimer";
 import { cachedPsychs } from "@/lib/fetchData";
+import { type PsychEntry } from "@/lib/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -11,7 +12,7 @@ const App = () => {
   useEffect(() => {
     navigation.setOptions({ title: "Details" });
   }, [navigation]);
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<PsychEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   useEffect(() => {
@@ -32,11 +33,11 @@ const App = () => {
 
   const { slug }: { slug: string } = useLocalSearchParams();
 
-  const entry = useMemo(() => {
+  const entry = useMemo((): PsychEntry | null => {
     if (isLoading) return null;
-    const idx: { [key: string]: any } = {};
+    const idx: Record<string, PsychEntry> = {};
     for (const sub of data) {
-      idx[sub["slug"]] = sub;
+      idx[sub.slug] = sub;
     }
     return idx[slug] ?? null;
   }, [data, isLoading, slug]);
@@ -56,6 +57,15 @@ const App = () => {
       </View>
     );
   }
+
+  if (!entry) {
+    return (
+      <View>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <SectionList
       sections={[

@@ -7,6 +7,7 @@ import {
   gridState,
   saveGridState,
 } from "@/lib/fetchData";
+import { type PsychEntry } from "@/lib/types";
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import {
   FlatList,
@@ -20,7 +21,7 @@ import {
 const App = () => {
   const [mainlist, setMainlist] = useState<any[]>([]);
   const [risks, setRisks] = useState<any>(null);
-  const [psychs, setPsychs] = useState<{ [key: string]: any }>({});
+  const [psychs, setPsychs] = useState<Record<string, PsychEntry>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentState, setState] = useState<{
@@ -35,13 +36,13 @@ const App = () => {
           cachedRisks(),
           gridState(),
         ]);
-        const idx: { [key: string]: any } = {};
+        const idx: Record<string, PsychEntry> = {};
         const mainlist: string[] = [];
         const list: { [key: string]: boolean } = {};
         for (const sub of psychs) {
-          idx[sub["slug"]] = sub;
-          mainlist.push(sub["slug"]);
-          list[sub["slug"]] = preselected.includes(sub["slug"]);
+          idx[sub.slug] = sub;
+          mainlist.push(sub.slug);
+          list[sub.slug] = preselected.includes(sub.slug);
         }
         setRisks(risks);
         setState({ checked_boxes: list });
