@@ -141,6 +141,7 @@ const App = () => {
                             isLoading={isLoading}
                           />
                         )}
+                        keyExtractor={(item, index) => `${item[0]}-${item[1]}-${index}`}
                       />
                     ),
                   },

@@ -59,7 +59,7 @@ const ModalPicker = ({
                   </View>
                 </Pressable>
               )}
-              keyExtractor={(item) => `item-${item}-${isChecked(item)}`}
+              keyExtractor={(item) => item}
             />
           </View>
         </View>
