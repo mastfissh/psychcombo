@@ -1,70 +1,18 @@
-import combosFallback from "shared/combos.json";
-import risksFallback from "shared/risks.json";
-import psychoactivesFallback from "shared/psychoactives.json";
+import combos from "shared/combos.json";
+import risks from "shared/risks.json";
+import psychoactives from "shared/psychoactives.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Application from "expo-application";
 
-const API_BASE_URL = "https://psychcombo.com/apiv1";
-
-function versioned(key: string): string {
-  const versionId = Application.nativeBuildVersion;
-  const month = new Date().getMonth();
-  return `${key}_${versionId}_${month}_hash`;
-}
-
-async function getHash(): Promise<Record<string, string>> {
-  const response = await fetch(`${API_BASE_URL}/hash.json`);
-  return response.json();
-}
-
-async function fetchAndCache(url: string, key: string): Promise<void> {
-  try {
-    const hash = await getHash();
-    const savedHash = await AsyncStorage.getItem(versioned(key));
-    const cached = await AsyncStorage.getItem(key);
-
-    if (savedHash === hash[key] && cached) {
-      return;
-    }
-
-    const response = await fetch(url);
-    const data = await response.text();
-    await AsyncStorage.setItem(key, data);
-    await AsyncStorage.setItem(versioned(key), hash[key]);
-  } catch (error) {
-    // Background refresh failure is non-fatal; cached/fallback data will be used
-    console.warn("Background data refresh failed:", error);
-  }
-}
-
-async function fetchFromCache(key: string, fallback: string): Promise<string> {
-  return (await AsyncStorage.getItem(key)) || fallback;
-}
-
-async function cachedData<T>(
-  endpoint: string,
-  key: string,
-  fallbackData: T
-): Promise<T> {
-  const API_URL = `${API_BASE_URL}/${endpoint}.json`;
-  // Fire-and-forget background refresh; result is served from cache/fallback
-  void fetchAndCache(API_URL, key);
-  const result = await fetchFromCache(key, JSON.stringify(fallbackData));
-  return JSON.parse(result) as T;
-}
-
-export const cachedPsychs = () =>
-  cachedData("psychoactives", "psychoactives", psychoactivesFallback);
-export const cachedRisks = () => cachedData("risks", "risks", risksFallback);
-export const cachedCombos = () =>
-  cachedData("combos", "combos", combosFallback);
+export const cachedPsychs = async () => psychoactives;
+export const cachedRisks = async () => risks;
+export const cachedCombos = async () => combos;
 
 export async function gridState(): Promise<string[]> {
-  const raw = await fetchFromCache(
-    "chosenPsychs",
-    JSON.stringify(["alcohol", "cannabis-species", "cocaine", "ketamine"])
-  );
-  return JSON.parse(raw) as string[];
+  const raw = await AsyncStorage.getItem("chosenPsychs");
+  if (raw) {
+    return JSON.parse(raw) as string[];
+  }
+  return ["alcohol", "cannabis-species", "cocaine", "ketamine"];
 }
 
 export async function saveGridState(state: string[]): Promise<void> {
