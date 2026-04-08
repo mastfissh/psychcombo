@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, Modal, Pressable, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { type PsychEntry } from "@/lib/types";
 
 type ModalPickerProps = {
@@ -27,7 +28,7 @@ const ModalPicker = ({
       className="modalView m-5 bg-white rounded-lg p-9 flex items-center shadow-lg shadow-black/25"
       onRequestClose={() => setModalVisible(false)}
     >
-      <View className="rounded-lg bg-white shadow-md m-1 p-2 ios:mt-12">
+      <SafeAreaView className="flex-1 bg-white">
         <Pressable
           className="bg-violet-400 rounded-lg text-xl p-2 m-2"
           onPress={() => setModalVisible(false)}
@@ -63,7 +64,7 @@ const ModalPicker = ({
             />
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 };
