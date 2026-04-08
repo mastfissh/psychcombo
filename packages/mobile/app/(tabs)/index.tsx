@@ -8,7 +8,7 @@ import {
   saveGridState,
 } from "@/lib/fetchData";
 import { type PsychEntry } from "@/lib/types";
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   Pressable,
@@ -17,6 +17,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const App = () => {
   const [mainlist, setMainlist] = useState<any[]>([]);
@@ -100,7 +101,7 @@ const App = () => {
   }, [currentState.checked_boxes]);
 
   return (
-    <Fragment>
+    <SafeAreaView className="flex-1">
       <Text className="bg-red-200 bg-orange-200 bg-amber-200 bg-cyan-200 bg-violet-200 bg-blue-200 bg-slate-200"></Text>
 
       <View className="flex-1 m-2">
@@ -120,44 +121,42 @@ const App = () => {
           <Text className="text-white font-bold text-center">Show Picker</Text>
         </Pressable>
         {!modalVisible && (
-          <Fragment>
-            <ScrollView className="container">
-              <SectionList
-                horizontal={true}
-                sections={[
-                  {
-                    title: "",
-                    data: [grid],
-                    renderItem: ({ item }) => (
-                      <FlatList
-                        key={JSON.stringify(chart)}
-                        data={item}
-                        numColumns={chart.length}
-                        renderItem={({ item }) => (
-                          <GridCell
-                            item={item}
-                            psychs={psychs}
-                            risks={risks}
-                            isLoading={isLoading}
-                          />
-                        )}
-                        keyExtractor={(item, index) => `${item[0]}-${item[1]}-${index}`}
-                      />
-                    ),
-                  },
-                ]}
-                renderSectionHeader={({ section: { title } }) => (
-                  <Text className="text-lg font-bold">{title}</Text>
-                )}
-                keyExtractor={(_, index) => index.toString()}
-              />
+          <ScrollView className="container">
+            <SectionList
+              horizontal={true}
+              sections={[
+                {
+                  title: "",
+                  data: [grid],
+                  renderItem: ({ item }) => (
+                    <FlatList
+                      key={JSON.stringify(chart)}
+                      data={item}
+                      numColumns={chart.length}
+                      renderItem={({ item }) => (
+                        <GridCell
+                          item={item}
+                          psychs={psychs}
+                          risks={risks}
+                          isLoading={isLoading}
+                        />
+                      )}
+                      keyExtractor={(item, index) => `${item[0]}-${item[1]}-${index}`}
+                    />
+                  ),
+                },
+              ]}
+              renderSectionHeader={({ section: { title } }) => (
+                <Text className="text-lg font-bold">{title}</Text>
+              )}
+              keyExtractor={(_, index) => index.toString()}
+            />
 
-              <KeySection />
-            </ScrollView>
-          </Fragment>
+            <KeySection />
+          </ScrollView>
         )}
       </View>
-    </Fragment>
+    </SafeAreaView>
   );
 };
 
